@@ -12,13 +12,11 @@ Tugas II IF3260 Grafika Komputer
 
    ````
    nodemon server
-   ```
    ````
 2. Open your browser and type in searchbar
 
    ````
    localhost:3000
-   ```
    ````
 3. Select an item to draw and turn on/off shading
 4. Click `Draw`
