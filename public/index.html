@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Hollow Object</title>
+        <link rel="stylesheet" type="text/css" href="css/main.css">
+        <script src="js/main.js" defer></script>
+    </head>
+
+    <body>
+        <!--Main Part-->
+        <h1 class="main-title">Hollow Object</h1>
+        <div class="main-container">
+            <canvas class="main-canvas" title="Canvas to show your image"></canvas>
+            
+            <div class="draw-input-container">
+                <select class="select">
+                    <option class="disabled-option" disabled selected>Select item to draw</option>
+                    <option value="Item-1">Item 1</option>
+                    <option value="Item-2">Item 2</option>
+                    <option value="Item-3">Item 3</option>
+                </select>
+                <button id="shading-button" class="util-button" onclick="turnOnOffShading()">Shading OFF</button>
+            </div>
+
+            <div class="util-button-container">
+                <button style="margin-right: 2.5px;" class="util-button save-load">Save</button>
+                <button style="margin-left: 2.5px; margin-right: 5px;" class="util-button save-load">Load</button>
+                <input type="file" id="load-file" onchange="" style="display: none;">
+                <button id="draw" class="util-button">Draw</button>
+                <button id="help" class="util-button">Help</button>
+            </div>
+        </div>
+
+        <footer class="web-footer">
+            <p>13518083 13518092 13518104</p>
+        </footer>
+        <!--Other(s) part-->
+        
+    </body>
+</html>

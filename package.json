@@ -1,0 +1,19 @@
+{
+  "name": "HollowObject",
+  "version": "1.0.0",
+  "description": "Tugas II IF3260 Grafika Komputer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.informatika.org/Izharulhaq/HollowObject.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

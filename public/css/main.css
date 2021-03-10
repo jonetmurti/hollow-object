@@ -1,0 +1,141 @@
+@import url('font.css');
+
+body {
+    background-color: #A2D2FF;
+
+    font-family: 'Viga';
+}
+
+.main-title {
+    font-size: 55px;
+    color: #FFFFFF;
+    text-align: center;
+    text-shadow: 2px 2px 5px #333333;
+}
+
+.main-container {
+    text-align: center;
+    
+    border-radius: 8px;
+
+    min-width: 600px;
+    height: auto;
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.main-canvas {
+    background-color: #A2D2FF;
+    
+    border: 5px solid #FFFFFF;
+    border-radius: 8px;
+
+    width: 600px;
+    height: 600px;
+}
+
+.select {
+    background-color: #A2D2FF;
+    
+    font-family: 'Viga';
+    font-size: 18px;
+    color: #FFFFFF;
+
+    border: 5px solid #FFFFFF;
+    border-radius: 8px;
+    
+    width: 480px;
+
+    margin: 5px 0;
+
+    outline: none;
+
+    float: left;
+}
+
+.select:hover {
+    background-color: #FFC8DD;
+}
+
+.select:hover option {
+    background-color: #A2D2FF;
+}
+
+.disabled-option {
+    color: #EEEEEE;
+}
+
+#shading-button {
+    font-size: 18px !important;
+    float: right;
+}
+
+.util-button {
+    background-color: #A2D2FF;
+
+    font-family: 'Viga';
+    font-size: 20px;
+    color: #FFFFFF;
+
+    border: 5px solid #FFFFFF;
+    border-radius: 8px;
+
+    margin: 5px 0;
+
+    outline: none;
+}
+
+.util-button:hover {
+    background-color: #FFC8DD;
+}
+
+.util-button:active {
+    background-color: #FFAFCC;
+}
+
+.save-load {
+    float: left;
+}
+
+#draw {
+    background-color: #FFFFFF !important;
+
+    color: #A2D2FF !important;
+
+    width: 400px;
+}
+
+#draw:hover {
+    background-color: #FFC8DD !important;
+
+    color: #FFFFFF !important;
+}
+
+#draw:active {
+    background-color: #FFAFCC !important;
+}
+
+#help {
+    float: right;
+    margin-left: 5px;
+}
+
+.web-footer {
+    font-family: 'Roboto';
+    font-size: 15px;
+    color: #FFFFFF;
+    text-align: center;
+
+    width: 100%;
+    
+    position: fixed;
+
+    bottom: 0;
+}
