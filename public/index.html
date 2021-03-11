@@ -5,12 +5,18 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Hollow Object</title>
+        
+        <!--CSS link-->
         <link rel="stylesheet" type="text/css" href="css/main.css">
-        <script src="js/main.js" defer></script>
+        <link rel="stylesheet" type="text/css" href="css/other.css">
+        
+        <!--JS link-->
+        <script src="js/draw.js" defer></script>
+        <script src="js/help.js" defer></script>
     </head>
 
     <body>
-        <!--Main Part-->
+        <!--MAIN PART-->
         <h1 class="main-title">Hollow Object</h1>
         <div class="main-container">
             <canvas class="main-canvas" title="Canvas to show your image"></canvas>
@@ -27,17 +33,34 @@
 
             <div class="util-button-container">
                 <button style="margin-right: 2.5px;" class="util-button save-load">Save</button>
-                <button style="margin-left: 2.5px; margin-right: 5px;" class="util-button save-load">Load</button>
-                <input type="file" id="load-file" onchange="" style="display: none;">
-                <button id="draw" class="util-button">Draw</button>
-                <button id="help" class="util-button">Help</button>
+                <button style="margin-left: 2.5px; margin-right: 5px;" class="util-button save-load">Load</button> <input type="file" id="load-file" onchange="" style="display: none;">
+                <button id="draw" class="util-button" onclick="draw()">Draw</button>
+                <button id="help" class="util-button" onclick="help()">Help</button>
             </div>
         </div>
 
         <footer class="web-footer">
             <p>13518083 13518092 13518104</p>
         </footer>
-        <!--Other(s) part-->
-        
+
+        <!--OTHER(S) PART-->
+        <div id="help-modal" class="modal-background">
+            <div class="modal-container">
+                <p class="modal-title">Help</p>
+                
+                <div class="tab">
+                    <button id="help-draw" class="tab-button" onclick="openHelpTab('draw')">Draw</button>
+                    <button id="help-cnvs" class="tab-button" onclick="openHelpTab('cnvs')">Canvas</button>
+                    <button id="help-save" class="tab-button" onclick="openHelpTab('save')">Save</button>
+                    <button id="help-load" class="tab-button" onclick="openHelpTab('load')">Load</button>
+                </div>
+
+                <textarea id="info-text" readonly></textarea>
+
+                <div>
+                    <button id="close-help" class="util-button" onclick="closeHelp()">Close</button>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

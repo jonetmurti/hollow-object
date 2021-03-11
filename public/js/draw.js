@@ -7,38 +7,21 @@ function turnOnOffShading() {
 
     if (currShading == "Shading OFF") {
         shadingButton.innerHTML = "Shading ON";
-        // TODO : do something here
+        // TODO : do something here, maybe
     }
     else if (currShading == "Shading ON") { 
         shadingButton.innerHTML = "Shading OFF";
-        // TODO : do something here
+        // TODO : do something here, maybe
     }
 }
 
 /**
- * Save geometry model to an external file
- */
-function save() {
-
-}
-
-/**
- * Load geometry model from an external file
- */
-function load() {
-
-}
-
-/**
- * Draw selected geometry model
+ * Draw selected item
  */
 function draw() {
-
-}
-
-/**
- * Open help
- */
-function help() {
-
+    var itemSelect = document.getElementsByClassName('select')[0];
+    var shadingBtn = document.getElementById('shading-button');
+    
+    var item = itemSelect.value;
+    // TODO : draw item here
 }
