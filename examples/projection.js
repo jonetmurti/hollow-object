@@ -1,4 +1,12 @@
-function main() {
+var script  = document.createElement('script'); 
+  script.src  = 'position.js'; 
+  script.type = 'text/javascript'; 
+  script.defer = true; 
+  
+document.getElementsByTagName('body').item(0).appendChild(script); 
+// include('position.js')
+
+function main(hollows) {
     var canvas = document.getElementById('gl-canvas');
 
     canvas.width = 800;
@@ -22,7 +30,7 @@ function main() {
     
     void main() {
         vec4 tempPos = vec4(vertPos, 1.0);
-        gl_Position = projMat * modelViewMat * objMat * normMat * tempPos;
+        gl_Position = projMat  * objMat *  tempPos;
     }`;
 
     var frag = `precision mediump float;
@@ -57,58 +65,6 @@ function main() {
         console.log("failed to link program : ", gl.getProgramInfoLog(program));
         return;
     }
-
-    // ================== OBJECT =======================
-    var cube = [
-        // top
-        350, 350, 450,
-        450, 350, 450,
-        450, 350, 350,
-        350, 350, 450,
-        450, 350, 350,
-        350, 350, 350,
-
-        // bottom
-        350, 450, 450,
-        450, 450, 350,
-        450, 450, 450,
-        350, 450, 450,
-        350, 450, 350,
-        450, 450, 350,
-
-        // front
-        350, 450, 450,
-        450, 450, 450,
-        450, 350, 450,
-        350, 450, 450,
-        450, 350, 450,
-        350, 350, 450,
-
-        // back
-        350, 450, 350,
-        450, 350, 350,
-        450, 450, 350,
-        350, 450, 350,
-        350, 350, 350,
-        450, 350, 350,
-
-        // right
-        450, 450, 450,
-        450, 450, 350,
-        450, 350, 350,
-        450, 450, 450,
-        450, 350, 350,
-        450, 350, 450,
-
-        // left
-        350, 450, 450,
-        350, 350, 350,
-        350, 450, 350,
-        350, 450, 450,
-        350, 350, 450,
-        350, 350, 350
-    ];
-    // ===================================================
 
     // ================ MATRICES =========================
     var normMat = [
@@ -175,7 +131,12 @@ function main() {
 
     var positionBuf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube), gl.STATIC_DRAW);
+    for (var i=0; i<hollows.length; i++) {
+        for (var j=0; j<hollows[i].length; j++) {
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollows[i][j]), gl.STATIC_DRAW);
+        }
+    }
+    // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube), gl.STATIC_DRAW);
 
     var positionLoc = gl.getAttribLocation(program, 'vertPos');
     var normLoc = gl.getUniformLocation(program, 'normMat');
@@ -200,7 +161,7 @@ function main() {
 
     let ySlider = document.getElementById('y-trans');
     ySlider.addEventListener('input', function() {
-        transVector[1] = ySlider.value * -2 / 800 + 1;
+        transVector[1] = ySlider.value * 2 / 800 - 1;
         transMat = [
             1, 0, 0, 0,
             0, 1, 0, 0,
@@ -213,7 +174,7 @@ function main() {
 
     let zSlider = document.getElementById('z-trans');
     zSlider.addEventListener('input', function() {
-        transVector[2] = zSlider.value * 2 / 800 - 1;
+        transVector[2] = zSlider.value * -2 / 800 + 1;
         transMat = [
             1, 0, 0, 0,
             0, 1, 0, 0,
@@ -322,4 +283,80 @@ function main() {
     }
 }
 
-main();
+var hollows = [];
+var hollow = [];
+
+var cube = [
+    // // top
+    // 350, 350, 450,
+    // 450, 350, 450,
+    // 450, 350, 350,
+    // 350, 350, 450,
+    // 450, 350, 350,
+    // 350, 350, 350,
+
+    // // bottom
+    // 350, 450, 450,
+    // 450, 450, 350,
+    // 450, 450, 450,
+    // 350, 450, 450,
+    // 350, 450, 350,
+    // 450, 450, 350,
+
+    // // front
+    // 350, 450, 450,
+    // 450, 450, 450,
+    // 450, 350, 450,
+    // 350, 450, 450,
+    // 450, 350, 450,
+    // 350, 350, 450,
+
+    // // back
+    // 350, 450, 350,
+    // 450, 350, 350,
+    // 450, 450, 350,
+    // 350, 450, 350,
+    // 350, 350, 350,
+    // 450, 350, 350,
+
+    // // right
+    // 450, 450, 450,
+    // 450, 450, 350,
+    // 450, 350, 350,
+    // 450, 450, 450,
+    // 450, 350, 350,
+    // 450, 350, 450,
+
+    // // left
+    // 350, 450, 450,
+    // 350, 350, 350,
+    // 350, 450, 350,
+    // 350, 450, 450,
+    // 350, 350, 450,
+    // 350, 350, 350
+
+    //front
+    -1,-1,2,
+    1,-1,2,
+    1,1,2,
+    
+    1,1,2,
+    -1,1,2,
+    -1,-1,2,
+
+    //back
+    
+    // 1,-1,2,
+    // -1,-1,2,
+    // 1,1,2,
+    
+    
+    // -1,1,2,
+    // 1,1,2,
+    // -1,-1,2,
+
+];
+
+hollow.push(cube);
+hollows.push(hollow);
+main(hollows);

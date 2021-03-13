@@ -1,7 +1,7 @@
 var cubeRotation = 0.0;
 
 main();
-
+// main();
 //
 // Start here
 //
@@ -102,21 +102,125 @@ function initBuffers(gl) {
 
   // Now create an array of positions for the cube.
 
-  const positions = [
+  const positions1 = [
     // Front face
+    -2.0,
+    -2.0,
+    1.0,
+
     -1.0,
     -1.0,
+    1.0,
+
+    0.0,
+    1.0,
+    1.0,
+
+    0.0,
+    2.0,
+    1.0,
+
+    // Back face
+    -1.0,
+    -1.0,
+    -1.0,
+
+    -1.0,
+    1.0,
+    -1.0,
+
+    1.0,
+    1.0,
+    -1.0,
+
+    1.0,
+    -1.0,
+    -1.0,
+
+    // Top face
+    -1.0,
+    1.0,
+    -1.0,
+
+    -1.0,
+    1.0,
+    1.0,
+
+    1.0,
+    1.0,
+    1.0,
+
+    1.0,
+    1.0,
+    -1.0,
+
+    // Bottom face
+    -1.0,
+    -1.0,
+    -1.0,
+
+    1.0,
+    -1.0,
+    -1.0,
+
+    1.0,
+    -1.0,
+    1.0,
+
+    -1.0,
+    -1.0,
+    1.0,
+
+    // Right face
+    1.0,
+    -1.0,
+    -1.0,
+
+    1.0,
+    1.0,
+    -1.0,
+
+    1.0,
+    1.0,
     1.0,
 
     1.0,
     -1.0,
     1.0,
 
+    // Left face
+    -1.0,
+    -1.0,
+    -1.0,
+
+    -1.0,
+    -1.0,
     1.0,
+
+    -1.0,
     1.0,
     1.0,
 
     -1.0,
+    1.0,
+    -1.0,
+  ];
+
+  const positions2 = [
+    // Front face
+    1.0,
+    -1.0,
+    1.0,
+
+    2.0,
+    -2.0,
+    1.0,
+
+    0,
+    2.0,
+    1.0,
+
+    0,
     1.0,
     1.0,
 
@@ -210,8 +314,7 @@ function initBuffers(gl) {
   // shape. We do this by creating a Float32Array from the
   // JavaScript array, then use it to fill the current buffer.
 
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions1), gl.STATIC_DRAW);
   // Now set up the colors for the faces. We'll use solid colors
   // for each face.
 
