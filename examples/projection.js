@@ -170,6 +170,25 @@ function main() {
     ];
     // ===================================================
 
+    // ================= CAMERA ==========================
+    var eye = [0, 0, 0];
+    var at = [0, 0, 0];
+    var up = [0, 1, 0];
+
+    let zaxis = subtract(at, eye);
+    let xaxis = cross(zaxis, up);
+    let yaxis = cross(xaxis, zaxis);
+
+    negate(zaxis);
+
+    var camTrialMat = [
+        xaxis[0], yaxis[0], zaxis[0], 0, 
+        xaxis[1], yaxis[1], zaxis[1], 0,
+        xaxis[2], yaxis[2], zaxis[2], 0,
+        -dot(xaxis, eye), -dot(yaxis, eye), -dot(zaxis, eye), 1
+    ];
+    // ===================================================
+
     // =============== BUFFERS ===========================
     gl.useProgram(program);
 
@@ -200,7 +219,7 @@ function main() {
 
     let ySlider = document.getElementById('y-trans');
     ySlider.addEventListener('input', function() {
-        transVector[1] = ySlider.value * -2 / 800 + 1;
+        transVector[1] = ySlider.value * 2 / 800 - 1;
         transMat = [
             1, 0, 0, 0,
             0, 1, 0, 0,
@@ -266,6 +285,10 @@ function main() {
 
     render();
 
+    // ==================== DEBUG SECTION ===============
+
+    // ==================================================
+
     function render() {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -319,6 +342,62 @@ function main() {
             }
         }
         return res;
+    }
+
+    function subtract(a, b) {
+        /*
+            a and b are vectors of same length
+        */
+    
+        const len = a.length;
+        let res = 0;
+        for (let i = 0; i < len; i++) {
+            res.psuh(a[i] - b[i]);
+        }
+
+        return res;
+    }
+
+    function normalize(a) {
+        
+    }
+
+    function norm(a) {
+
+    }
+
+    function cross(a, b) {
+        /*
+            a and b are 3d vectors
+        */
+
+        let res = [];
+
+        res.push(a[1]*b[2] - a[2]*b[1]);
+        res.push(a[2]*b[0] - a[0]*b[2]);
+        res.push(a[0]*b[1] - a[1]*b[0]);
+
+        return res;
+    }
+
+    function dot(a, b) {
+        /*
+            a and b are vectors of same length
+        */
+    
+        const len = a.length;
+        let res = 0;
+        for (let i = 0; i < len; i++) {
+            res += (a[i]*b[i]);
+        }
+
+        return res;
+    }
+
+    function negate(a) {
+        for (let i = 0; i < a.length; i++) {
+            a[i] *= -1;
+        }
     }
 }
 
