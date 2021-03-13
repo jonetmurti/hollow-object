@@ -131,11 +131,22 @@ function main(hollows) {
 
     var positionBuf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuf);
-    for (var i=0; i<hollows.length; i++) {
-        for (var j=0; j<hollows[i].length; j++) {
+
+    let selectObject = document.getElementById('hollow');
+    if (selectObject=="limas") {
+        for (var j=0; j<hollows[0].length; j++) {
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollows[i][j]), gl.STATIC_DRAW);
+        }
+    } else if (selectObject=="kubus") {
+        for (var j=0; j<hollows[1].length; j++) {
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollows[i][j]), gl.STATIC_DRAW);
+        }
+    } else {
+        for (var j=0; j<hollows[2].length; j++) {
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollows[i][j]), gl.STATIC_DRAW);
         }
     }
+    
     // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube), gl.STATIC_DRAW);
 
     var positionLoc = gl.getAttribLocation(program, 'vertPos');
@@ -283,9 +294,14 @@ function main(hollows) {
     }
 }
 
+/*Hollows adalah array keseluruhan
+hollow[0] untuk limas
+hollow[1] untuk kubus
+hollow[2] untuk limaskubus
+cube diisi semua kubus pembentuk hollow object
+*/
 var hollows = [];
 var hollow = [];
-
 var cube = [
     // // top
     // 350, 350, 450,
@@ -359,4 +375,5 @@ var cube = [
 
 hollow.push(cube);
 hollows.push(hollow);
+
 main(hollows);
