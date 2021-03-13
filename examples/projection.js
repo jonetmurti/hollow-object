@@ -30,7 +30,7 @@ function main(hollows) {
     
     void main() {
         vec4 tempPos = vec4(vertPos, 1.0);
-        gl_Position = projMat  * objMat *  tempPos;
+        gl_Position = projMat * modelViewMat * objMat * tempPos;
     }`;
 
     var frag = `precision mediump float;
@@ -68,10 +68,10 @@ function main(hollows) {
 
     // ================ MATRICES =========================
     var normMat = [
-        2/gl.canvas.width, 0, 0, 0,
-        0, -2/gl.canvas.height, 0, 0,
-        0, 0, 2/800, 0,
-        -1, 1, -1, 1
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 3, 1
     ];
 
     var scaleMat = [
@@ -131,11 +131,15 @@ function main(hollows) {
     var at = [0, 0, 0];
     var up = [0, 1, 0];
 
-    let zaxis = subtract(at, eye);
-    let xaxis = cross(zaxis, up);
+    let zaxis = normalize(subtract(at, eye));
+    let xaxis = normalize(cross(zaxis, up));
     let yaxis = cross(xaxis, zaxis);
 
-    negate(zaxis);
+    negate(xaxis);
+
+    // console.log(xaxis);
+    // console.log(yaxis);
+    // console.log(zaxis);
 
     var camTrialMat = [
         xaxis[0], yaxis[0], zaxis[0], 0, 
@@ -219,12 +223,26 @@ function main(hollows) {
 
     let camTranSlider = document.getElementById('cam-trans');
     camTranSlider.addEventListener('input', function() {
-        camTransVec[2] = camTranSlider.value * -2 / 800 + 1;
-        camTrans = [
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            camTransVec[0], camTransVec[1], camTransVec[2], 1
+        eye = [0, 0, camTranSlider.value * 10 / 800 - 5];
+        const rad = degToRad(document.getElementById('cam-rotate').value);
+
+        const x = eye[0]*Math.cos(rad) + eye[2]*Math.sin(rad);
+        const y = eye[1];
+        const z = eye[2]*Math.cos(rad) - eye[0]*Math.sin(rad);
+
+        let rotEye = [x, y, z];
+
+        let zaxis = normalize(subtract(at, rotEye));
+        let xaxis = normalize(cross(zaxis, up));
+        let yaxis = cross(xaxis, zaxis);
+
+        negate(xaxis);
+
+        camTrialMat = [
+            xaxis[0], yaxis[0], zaxis[0], 0, 
+            xaxis[1], yaxis[1], zaxis[1], 0,
+            xaxis[2], yaxis[2], zaxis[2], 0,
+            -dot(xaxis, rotEye), -dot(yaxis, rotEye), -dot(zaxis, rotEye), 1
         ];
 
         render();
@@ -233,11 +251,24 @@ function main(hollows) {
     let camRotSlider = document.getElementById('cam-rotate');
     camRotSlider.addEventListener('input', function() {
         const rad = degToRad(camRotSlider.value);
-        camRotate = [
-            Math.cos(rad), 0, -Math.sin(rad), 0,
-            0, 1, 0, 0,
-            Math.sin(rad), 0, Math.cos(rad), 0,
-            0, 0, 0, 1
+
+        const x = eye[0]*Math.cos(rad) + eye[2]*Math.sin(rad);
+        const y = eye[1];
+        const z = eye[2]*Math.cos(rad) - eye[0]*Math.sin(rad);
+
+        let rotEye = [x, y, z];
+
+        let zaxis = normalize(subtract(at, rotEye));
+        let xaxis = normalize(cross(zaxis, up));
+        let yaxis = cross(xaxis, zaxis);
+
+        negate(xaxis);
+
+        camTrialMat = [
+            xaxis[0], yaxis[0], zaxis[0], 0, 
+            xaxis[1], yaxis[1], zaxis[1], 0,
+            xaxis[2], yaxis[2], zaxis[2], 0,
+            -dot(xaxis, rotEye), -dot(yaxis, rotEye), -dot(zaxis, rotEye), 1
         ];
 
         render();
@@ -276,7 +307,7 @@ function main(hollows) {
 
         gl.uniformMatrix4fv(normLoc, false, new Float32Array(normMat));
         gl.uniformMatrix4fv(objMatLoc, false, new Float32Array(objMat));
-        gl.uniformMatrix4fv(modViewLoc, false, new Float32Array(modelView));
+        gl.uniformMatrix4fv(modViewLoc, false, new Float32Array(camTrialMat));
         gl.uniformMatrix4fv(projLoc, false, new Float32Array(projMat));
     
         gl.drawArrays(gl.TRIANGLES, 0, 36);
@@ -311,20 +342,33 @@ function main(hollows) {
         */
     
         const len = a.length;
-        let res = 0;
+        let res = [];
         for (let i = 0; i < len; i++) {
-            res.psuh(a[i] - b[i]);
+            res.push(a[i] - b[i]);
         }
 
         return res;
     }
 
     function normalize(a) {
-        
+        let res = [];
+
+        const length = norm(a);
+        for (let i = 0; i < a.length; i++) {
+            res.push(a[i]/length);
+        }
+
+        return res;
     }
 
     function norm(a) {
+        let res = 0;
+        for (let i = 0; i < a.length; i++) {
+            res += (a[i]*a[i]);
+        }
+        res = Math.sqrt(res);
 
+        return res;
     }
 
     function cross(a, b) {
@@ -414,26 +458,53 @@ var cube = [
     // 350, 350, 450,
     // 350, 350, 350
 
+    // top
+    -1, 1, -1,
+    1, 1, -1,
+    1, 1, 1,
+    -1, 1, -1,
+    1, 1, 1,
+    -1, 1, 1,
+
+    // bottom
+    -1, -1, -1,
+    1, -1, 1,
+    1, -1, -1,
+    -1, -1, -1,
+    -1, -1, 1,
+    1, -1, 1,
+
     //front
-    -1,-1,2,
-    1,-1,2,
-    1,1,2,
-    
-    1,1,2,
-    -1,1,2,
-    -1,-1,2,
+    -1,-1,-1,
+    1,-1,-1,
+    1,1,-1,
+    1,1,-1,
+    -1,1,-1,
+    -1,-1,-1,
 
     //back
+    -1,-1,1,
+    1,1,1,
+    1,-1,1,
+    1,1,1,
+    -1,-1,1,
+    -1,1,1,
     
-    // 1,-1,2,
-    // -1,-1,2,
-    // 1,1,2,
-    
-    
-    // -1,1,2,
-    // 1,1,2,
-    // -1,-1,2,
+    // right
+    1, -1, -1,
+    1, -1, 1,
+    1, 1, 1,
+    1, -1, -1,
+    1, 1, 1,
+    1, 1, -1,
 
+    // left
+    -1, -1, -1,
+    -1, 1, 1,
+    -1, -1, 1,
+    -1, -1, -1,
+    -1, 1, -1,
+    -1, 1, 1
 ];
 
 hollow.push(cube);
