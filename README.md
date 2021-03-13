@@ -1,6 +1,12 @@
 # Hollow Object
 
-Tugas II IF3260 Grafika Komputer
+Tugas II IF3260 Grafika Komputer<br>
+Hollow Objek adalah objek berbentuk 3D dengan rongga ditengah tiap permukaan sisinya. Pada tugas ini, kami membuat hollow objek dengan WebGL untuk bangun ruang 3 titik sudut (limas), bangun ruang 4 titik sudut(kubus), dan bangun ruang 5 titik sudut (limas-kubus).<br>
+
+# Contributor
+- Jonet Wira Murti 13518083
+- Izharullhq 13518092
+- Kevin Austin Stefano 13518104
 
 ## Prerequisite
 
@@ -21,3 +27,6 @@ Tugas II IF3260 Grafika Komputer
 3. Select an item to draw and turn on/off shading
 4. Click `Draw`
 5. Open `Help` to seek help if you don't understand something
+
+## Koordinat
+Koordinat titik untuk semua objek berongga yang kami buat, dapat diakses di sheet yang kami buat, yaitu : https://docs.google.com/spreadsheets/d/1W8E2wFCUccHIh8ny8Cb4zb1WtIlj4HERDvGptMwEK_Y/edit?usp=sharing 
