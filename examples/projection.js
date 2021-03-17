@@ -1,7 +1,7 @@
 var script  = document.createElement('script'); 
   script.src  = 'position.js'; 
   script.type = 'text/javascript'; 
-  script.defer = true; 
+  script.defer = true;
   
 document.getElementsByTagName('body').item(0).appendChild(script); 
 // include('position.js')
@@ -127,26 +127,7 @@ function main(hollows) {
     // ===================================================
 
     // ================= CAMERA ==========================
-    var eye = [0, 0, 0];
-    var at = [0, 0, 0];
-    var up = [0, 1, 0];
-
-    let zaxis = normalize(subtract(at, eye));
-    let xaxis = normalize(cross(zaxis, up));
-    let yaxis = cross(xaxis, zaxis);
-
-    negate(xaxis);
-
-    // console.log(xaxis);
-    // console.log(yaxis);
-    // console.log(zaxis);
-
-    var camTrialMat = [
-        xaxis[0], yaxis[0], zaxis[0], 0, 
-        xaxis[1], yaxis[1], zaxis[1], 0,
-        xaxis[2], yaxis[2], zaxis[2], 0,
-        -dot(xaxis, eye), -dot(yaxis, eye), -dot(zaxis, eye), 1
-    ];
+    let camera = new Camera(gl.canvas.width, gl.canvas.height);
     // ===================================================
 
     // =============== BUFFERS ===========================
@@ -169,7 +150,6 @@ function main(hollows) {
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollows[i][j]), gl.STATIC_DRAW);
         }
     }
-    
     // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube), gl.STATIC_DRAW);
 
     var positionLoc = gl.getAttribLocation(program, 'vertPos');
@@ -234,54 +214,13 @@ function main(hollows) {
 
     let camTranSlider = document.getElementById('cam-trans');
     camTranSlider.addEventListener('input', function() {
-        eye = [0, 0, camTranSlider.value * 10 / 800 - 5];
-        const rad = degToRad(document.getElementById('cam-rotate').value);
-
-        const x = eye[0]*Math.cos(rad) + eye[2]*Math.sin(rad);
-        const y = eye[1];
-        const z = eye[2]*Math.cos(rad) - eye[0]*Math.sin(rad);
-
-        let rotEye = [x, y, z];
-
-        let zaxis = normalize(subtract(at, rotEye));
-        let xaxis = normalize(cross(zaxis, up));
-        let yaxis = cross(xaxis, zaxis);
-
-        negate(xaxis);
-
-        camTrialMat = [
-            xaxis[0], yaxis[0], zaxis[0], 0, 
-            xaxis[1], yaxis[1], zaxis[1], 0,
-            xaxis[2], yaxis[2], zaxis[2], 0,
-            -dot(xaxis, rotEye), -dot(yaxis, rotEye), -dot(zaxis, rotEye), 1
-        ];
-
+        camera.updateTranslationZ(camTranSlider.value * 10 / 800 - 5);
         render();
     });
 
     let camRotSlider = document.getElementById('cam-rotate');
     camRotSlider.addEventListener('input', function() {
-        const rad = degToRad(camRotSlider.value);
-
-        const x = eye[0]*Math.cos(rad) + eye[2]*Math.sin(rad);
-        const y = eye[1];
-        const z = eye[2]*Math.cos(rad) - eye[0]*Math.sin(rad);
-
-        let rotEye = [x, y, z];
-
-        let zaxis = normalize(subtract(at, rotEye));
-        let xaxis = normalize(cross(zaxis, up));
-        let yaxis = cross(xaxis, zaxis);
-
-        negate(xaxis);
-
-        camTrialMat = [
-            xaxis[0], yaxis[0], zaxis[0], 0, 
-            xaxis[1], yaxis[1], zaxis[1], 0,
-            xaxis[2], yaxis[2], zaxis[2], 0,
-            -dot(xaxis, rotEye), -dot(yaxis, rotEye), -dot(zaxis, rotEye), 1
-        ];
-
+        camera.updateRotationY(camRotSlider.value);
         render();
     });
     // ===================================================
@@ -313,107 +252,14 @@ function main(hollows) {
         objMat = multiply(objMat, rotateMat);
         objMat = multiply(objMat, scaleMat);
     
-        let modelView = multiply(identity, camRotate);
-        modelView = multiply(modelView, camTrans);
+        const modelView = camera.calculateModelView();
 
         gl.uniformMatrix4fv(normLoc, false, new Float32Array(normMat));
         gl.uniformMatrix4fv(objMatLoc, false, new Float32Array(objMat));
-        gl.uniformMatrix4fv(modViewLoc, false, new Float32Array(camTrialMat));
+        gl.uniformMatrix4fv(modViewLoc, false, new Float32Array(modelView));
         gl.uniformMatrix4fv(projLoc, false, new Float32Array(projMat));
     
-        gl.drawArrays(gl.TRIANGLES, 0, 36);
-    }
-
-    // =================== UTILITY FUNCTION ===============
-    function degToRad(deg) {
-        return deg * Math.PI / 180;
-    }
-
-    function multiply(a, b) {
-        /* 
-            a and b are both 4 dimensional matrices
-        */
-        let res = [];
-        let temp = 0;
-        for (let i = 0; i < 4; i++) {
-            for (let j = 0; j < 4; j++) {
-                temp = 0;
-                for (let k = 0; k < 4; k++) {
-                    temp += b[4*i + k] * a[4*k + j];
-                }
-                res.push(temp);
-            }
-        }
-        return res;
-    }
-
-    function subtract(a, b) {
-        /*
-            a and b are vectors of same length
-        */
-    
-        const len = a.length;
-        let res = [];
-        for (let i = 0; i < len; i++) {
-            res.push(a[i] - b[i]);
-        }
-
-        return res;
-    }
-
-    function normalize(a) {
-        let res = [];
-
-        const length = norm(a);
-        for (let i = 0; i < a.length; i++) {
-            res.push(a[i]/length);
-        }
-
-        return res;
-    }
-
-    function norm(a) {
-        let res = 0;
-        for (let i = 0; i < a.length; i++) {
-            res += (a[i]*a[i]);
-        }
-        res = Math.sqrt(res);
-
-        return res;
-    }
-
-    function cross(a, b) {
-        /*
-            a and b are 3d vectors
-        */
-
-        let res = [];
-
-        res.push(a[1]*b[2] - a[2]*b[1]);
-        res.push(a[2]*b[0] - a[0]*b[2]);
-        res.push(a[0]*b[1] - a[1]*b[0]);
-
-        return res;
-    }
-
-    function dot(a, b) {
-        /*
-            a and b are vectors of same length
-        */
-    
-        const len = a.length;
-        let res = 0;
-        for (let i = 0; i < len; i++) {
-            res += (a[i]*b[i]);
-        }
-
-        return res;
-    }
-
-    function negate(a) {
-        for (let i = 0; i < a.length; i++) {
-            a[i] *= -1;
-        }
+        gl.drawArrays(gl.TRIANGLES, 0, 108);
     }
 }
 
@@ -426,54 +272,6 @@ cube diisi semua kubus pembentuk hollow object
 var hollows = [];
 var hollow = [];
 var cube = [
-    // // top
-    // 350, 350, 450,
-    // 450, 350, 450,
-    // 450, 350, 350,
-    // 350, 350, 450,
-    // 450, 350, 350,
-    // 350, 350, 350,
-
-    // // bottom
-    // 350, 450, 450,
-    // 450, 450, 350,
-    // 450, 450, 450,
-    // 350, 450, 450,
-    // 350, 450, 350,
-    // 450, 450, 350,
-
-    // // front
-    // 350, 450, 450,
-    // 450, 450, 450,
-    // 450, 350, 450,
-    // 350, 450, 450,
-    // 450, 350, 450,
-    // 350, 350, 450,
-
-    // // back
-    // 350, 450, 350,
-    // 450, 350, 350,
-    // 450, 450, 350,
-    // 350, 450, 350,
-    // 350, 350, 350,
-    // 450, 350, 350,
-
-    // // right
-    // 450, 450, 450,
-    // 450, 450, 350,
-    // 450, 350, 350,
-    // 450, 450, 450,
-    // 450, 350, 350,
-    // 450, 350, 450,
-
-    // // left
-    // 350, 450, 450,
-    // 350, 350, 350,
-    // 350, 450, 350,
-    // 350, 450, 450,
-    // 350, 350, 450,
-    // 350, 350, 350
-
     // top
     -1, 1, -1,
     1, 1, -1,
