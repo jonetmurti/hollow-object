@@ -571,5 +571,7 @@ class Hollow
             1	,	0.25	,	2	,
 
             ];
+            this.hollowlimas = [];
+            this.hollowprisma = [];
     }
 }

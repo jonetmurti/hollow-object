@@ -6,14 +6,21 @@ class Camera
             0, 1, 0,
             0, 0, 1
         ];
-
-        this.translation = [0, 0, 0];
-
         this.rotationY = [
             1, 0, 0,
             0, 1, 0,
             0, 0, 1
         ];
+        
+        this.rotationZ = [
+            1, 0, 0,
+            0, 1, 0,
+            0, 0, 1
+        ];
+
+        this.translation = [0, 0, 0];
+
+       
 
         this.perspective = [
             1, 0, 0, 0,
@@ -48,6 +55,16 @@ class Camera
         this.rotationY[6] = -sin;
         this.rotationY[8] = cos;
     }
+    updateRotationZ(deg) {
+        const rad = degToRad(deg);
+        const cos = Math.cos(rad);
+        const sin = Math.sin(rad);
+
+        this.rotationZ[0] = cos;
+        this.rotationZ[1] = -sin;
+        this.rotationZ[3] = sin;
+        this.rotationZ[4] = cos;
+    }
 
     calculateModelView() {
         let eye = [0, 0, 0];
@@ -59,7 +76,8 @@ class Camera
         }
 
         eye = matrixVectorMul(this.rotationY, eye);
-
+        eye = matrixVectorMul(this.rotationX, eye);
+        eye = matrixVectorMul(this.rotationZ, eye);
         let zaxis = normalize(subtract(at, eye));
         let xaxis = normalize(cross(zaxis, up));
         let yaxis = cross(xaxis, zaxis);

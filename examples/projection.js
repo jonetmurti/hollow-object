@@ -128,20 +128,16 @@ function main() {
     var positionBuf = gl.createBuffer();
     var hollow = new Hollow();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuf);
-    // var selectObject = document.getElementById('hollow');
-    // selectObject.addEventListener('change', function() {
-    //     if (selectObject.value=="limas") {
-    //         for (var j=0; j<hollows[0].length; j++) {
-    //             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollows[0][j]), gl.STATIC_DRAW);
-    //         }
-    //     } else if (selectObject.value=="kubus") {
-    //         for (var j=0; j<hollows[1].length; j++) {
-    //             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollows[1][j]), gl.STATIC_DRAW);
-    //         }
-    //     } else {
-                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollow.hollowcubic), gl.STATIC_DRAW);
-    //     }
-    // })  
+    var selectObject = document.getElementById('hollow');
+    selectObject.addEventListener('change', function() {
+        if (selectObject.value=="limas") {
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollow.hollowlimas), gl.STATIC_DRAW);
+        } else if (selectObject.value=="kubus") {
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollow.hollowcubic), gl.STATIC_DRAW);
+        } else {
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollow.hollowprisma), gl.STATIC_DRAW);
+        }
+    })  
     // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube), gl.STATIC_DRAW);
 
     var positionLoc = gl.getAttribLocation(program, 'vertPos');
@@ -210,11 +206,17 @@ function main() {
         render();
     });
 
-    let camRotSlider = document.getElementById('cam-rotate');
-    camRotSlider.addEventListener('input', function() {
-        camera.updateRotationY(camRotSlider.value);
+    let camRotSliderY = document.getElementById('cam-rotate-y');
+    camRotSliderY.addEventListener('input', function() {
+        camera.updateRotationY(camRotSliderY.value);
         render();
     });
+    let camRotSliderX = document.getElementById('cam-rotate-x');
+    camRotSliderX.addEventListener('input', function() {
+        camera.updateRotationX(camRotSliderX.value);
+        render();
+    });
+
     // ===================================================
 
     render();
