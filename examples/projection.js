@@ -1,12 +1,4 @@
-var script  = document.createElement('script'); 
-  script.src  = 'position.js'; 
-  script.type = 'text/javascript'; 
-  script.defer = true;
-  
-document.getElementsByTagName('body').item(0).appendChild(script); 
-// include('position.js')
-
-function main(hollows) {
+function main() {
     var canvas = document.getElementById('gl-canvas');
 
     canvas.width = 800;
@@ -134,6 +126,7 @@ function main(hollows) {
     gl.useProgram(program);
 
     var positionBuf = gl.createBuffer();
+    var hollow = new Hollow();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuf);
     // var selectObject = document.getElementById('hollow');
     // selectObject.addEventListener('change', function() {
@@ -146,10 +139,7 @@ function main(hollows) {
     //             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollows[1][j]), gl.STATIC_DRAW);
     //         }
     //     } else {
-            for (var j=0; j<hollows[1].length; j++) {
-                gl.bindBuffer(gl.ARRAY_BUFFER, positionBuf);
-                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollows[1][j]), gl.STATIC_DRAW);
-            }
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollow.hollowcubic), gl.STATIC_DRAW);
     //     }
     // })  
     // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube), gl.STATIC_DRAW);
@@ -261,167 +251,7 @@ function main(hollows) {
         gl.uniformMatrix4fv(modViewLoc, false, new Float32Array(modelView));
         gl.uniformMatrix4fv(projLoc, false, new Float32Array(projMat));
     
-        gl.drawArrays(gl.TRIANGLES, 0, 108);
+        gl.drawArrays(gl.TRIANGLES, 0, 1000);
     }
 }
-
-/*Hollows adalah array keseluruhan
-hollow[0] untuk limas
-hollow[1] untuk kubus
-hollow[2] untuk limaskubus
-cube diisi semua kubus pembentuk hollow object
-*/
-var hollows = [];
-var limas = [];
-var cube = [
-    // top
-    -1, 1, -1,
-    1, 1, -1,
-    1, 1, 1,
-    -1, 1, -1,
-    1, 1, 1,
-    -1, 1, 1,
-
-    // bottom
-    -1, -1, -1,
-    1, -1, 1,
-    1, -1, -1,
-    -1, -1, -1,
-    -1, -1, 1,
-    1, -1, 1,
-
-    //front
-    -1,-1,-1,
-    1,-1,-1,
-    1,1,-1,
-    1,1,-1,
-    -1,1,-1,
-    -1,-1,-1,
-
-    //back
-    -1,-1,1,
-    1,1,1,
-    1,-1,1,
-    1,1,1,
-    -1,-1,1,
-    -1,1,1,
-    
-    // right
-    1, -1, -1,
-    1, -1, 1,
-    1, 1, 1,
-    1, -1, -1,
-    1, 1, 1,
-    1, 1, -1,
-
-    // left
-    -1, -1, -1,
-    -1, 1, 1,
-    -1, -1, 1,
-    -1, -1, -1,
-    -1, 1, -1,
-    -1, 1, 1
-];
-limas.push(cube);
-hollows.push(limas);
-
-
-/*CUBE HOLLOW*/
-var kubus= [];
-var cube= [
-//Cube down front
--1	,	-1	,	0	,
-1	,	-1	,	0	,
-1	,	-0.75	,	0	,
--1	,	-0.75	,	0	,
--1	,	-1	,	0	,
-1	,	-0.75	,	0	,
-
-
-1	,	-1	,	0	,
-1	,	-1	,	0.25	,
-1	,	-0.75	,	0.25	,
-1	,	-0.75	,	0	,
-1	,	-1	,	0	,
-1	,	-0.75	,	0.25	,
-
-1	,	-1	,	0.25	,
--1	,	-1	,	0.25	,
--1	,	-0.75	,	0.25	,
-1	,	-0.75	,	0.25	,
-1	,	-1	,	0.25	,
--1	,	-0.75	,	0.25	,
-
--1	,	-1	,	0.25	,
--1	,	-1	,	0	,
--1	,	-0.75	,	0	,
--1	,	-0.75	,	0.25,
--1	,	-1	,	0.25	,
--1	,	-0.75	,	0	,
-
--1	,	-0.75	,	0	,
-1	,	-0.75	,	0	,
-1	,	-0.75	,	0.25	,
--1	,	-0.75	,	0.25	,
--1	,	-0.75	,	0	,
-1	,	-0.75	,	0.25,	
-
--1	,	-1	,	0	,
-1	,	-1	,	0	,
-1	,	-1	,	0.25	,
--1	,	-1	,	0.25,	
--1	,	-1	,	0	,
-1	,	-1	,	0.25	,
-
-//Cube down back
--1	,	-1	,	0.75	,
-1	,	-1	,	0.75	,
-1	,	-0.75	,	0.75	,
--1	,	-0.75	,	0.75	,
--1	,	-1	,	0.75	,
-1	,	-0.75	,	0.75	,
-
-1	,	-1	,	0.75	,
-1	,	-1	,	1	,
-1	,	-0.75	,	1	,
-1	,	-0.75	,	0.75	,
-1	,	-1	,	0.75	,
-1	,	-0.75	,	1	,
-
-					
-1	,	-1	,	1	,
--1	,	-1	,	1	,
--1	,	-0.75	,	1	,
-1	,	-0.75	,	1	,
-1	,	-1	,	1	,
--1	,	-0.75	,	1	,					
-					
--1	,	-1	,	1	,
--1	,	-1	,	0.75	,
--1	,	-0.75	,	0.75	,
--1	,	-0.75	,	1,	
--1	,	-1	,	1	,
--1	,	-0.75	,	0.75	,
-
--1	,	-0.75	,	0.75	,
-1	,	-0.75	,	0.75	,
-1	,	-0.75	,	1	,
--1	,	-0.75	,	1	,
--1	,	-0.75	,	0.75	,
-1	,	-0.75	,	1	,
-
--1	,	-1	,	0.75	,
-1	,	-1	,	0.75	,
-1	,	-1	,	1	,
--1	,	-1	,	1	,
--1	,	-1	,	0.75	,
-1	,	-1	,	1	,
-
-];
-
-
-
-kubus.push(cube);
-hollows.push(kubus);
-
-main(hollows);
+main();
