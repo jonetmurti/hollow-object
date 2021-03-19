@@ -110,7 +110,7 @@ function main() {
         } else if (selectObject.value=="kubus") {
             currentObject = new Hollow(hollowCubic);
         } else {
-            currentObject = null;
+            currentObject = new Hollow(hexagon);
         }
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(currentObject.vertices), gl.STATIC_DRAW);
         render();
