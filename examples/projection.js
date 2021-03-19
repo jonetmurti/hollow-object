@@ -70,8 +70,9 @@ function main() {
     // ===================================================
 
     // ================= OBJECT & CAMERA =====================
-    let camera = new Camera(gl.canvas.width, gl.canvas.height);
+    var camera = new Camera(gl.canvas.width, gl.canvas.height);
     var currentObject = null;
+    var projectionMatrix = projMat;
     // =======================================================
 
     // =============== BUFFERS ===========================
@@ -217,6 +218,19 @@ function main() {
         }
     });
 
+    let projection = document.getElementById('projection');
+    projection.addEventListener('change', function() {
+        if (projection.value=="ortographic") {
+            projectionMatrix = camera.ortographic();
+        } else if (projection.value=="oblique") {
+            projectionMatrix = null;
+        } else if (projection.value=="perspective") {
+            projectionMatrix = null;
+        } else {
+            projectionMatrix = projMat;
+        }
+        render();
+    });
     // ===================================================
     render();
 
@@ -227,21 +241,6 @@ function main() {
             gl.enable(gl.CULL_FACE);
 
             // gl.enable(gl.DEPTH_TEST);
-
-            var projectionMatrix = projMat;
-            var projection = document.getElementById('projection');
-            projection.addEventListener('change', function() {
-
-                if (selectObject.value=="ortographic") {
-                    projectionMatrix = camera.ortographic();
-                } else if (selectObject.value=="oblique") {
-                    projectionMatrix = null;
-                } else if (selectObject.value=="perspective") {
-                    projectionMatrix = null;
-                } else {
-                    projectionMatrix = projMat;
-                }
-            });
 
 
             gl.vertexAttribPointer(
@@ -262,6 +261,7 @@ function main() {
             gl.uniformMatrix4fv(projLoc, false, new Float32Array(projectionMatrix));
         
             gl.drawArrays(gl.TRIANGLES, 0, currentObject.nVertices);
+            // console.log(projectionMatrix);
         }
     }
 }
