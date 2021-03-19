@@ -15,7 +15,6 @@ function main() {
     var vert = `precision mediump float;
 
     attribute vec3 vertPos;
-    uniform mat4 normMat;
     uniform mat4 objMat;
     uniform mat4 modelViewMat;
     uniform mat4 projMat;
@@ -117,214 +116,185 @@ function main() {
         transVector[0], transVector[1], transVector[2], 1
     ];
     // ===================================================
-    
-    // ================= CAMERA ==========================
+
+    // ================= OBJECT & CAMERA =====================
     let camera = new Camera(gl.canvas.width, gl.canvas.height);
-    // ===================================================
+    var currentObject = null;
+    // =======================================================
 
     // =============== BUFFERS ===========================
     gl.useProgram(program);
 
     var positionBuf = gl.createBuffer();
-    var hollow = new Hollow();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuf);
+    // ===================================================
+
+    // ============= Load File ===========================
+    var fileReader =  new FileReader()
+
+    document.getElementById("load-button").addEventListener("change", function(){
+        if (this.files[0]){
+            fileReader.readAsText(this.files[0]);
+        }
+    });
+    
+    fileReader.onload = function(){
+        data = JSON.parse(fileReader.result);
+        currentObject = new Hollow(data.vertices);
+        currentObject.loadMatrices(data.matrices);
+        // TODO : Load Color
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(currentObject.vertices), gl.STATIC_DRAW);
+        render();
+        document.getElementById('hollow').value = '';
+    };
+    // ===================================================
+
+    // =============== CHOOSE OBJECT ===========================
     var selectObject = document.getElementById('hollow');
     selectObject.addEventListener('change', function() {
+        document.getElementById("load-button").value = '';
         if (selectObject.value=="limas") {
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollow.hollowlimas), gl.STATIC_DRAW);
-            render();
+            currentObject = new Hollow(hollowLimas);
         } else if (selectObject.value=="kubus") {
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollow.hollowcubic), gl.STATIC_DRAW);
-            render();
+            currentObject = new Hollow(hollowCubic);
         } else {
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollow.hollowprisma), gl.STATIC_DRAW);
-            render();
+            currentObject = null;
         }
-    })  
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(currentObject.vertices), gl.STATIC_DRAW);
+        render();
+    });
 
     let reset = document.getElementById("reset");
     reset.addEventListener("click", function () {
-        transVector = [0, 0, 0];
-        scaleMat = [
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            0, 0, 0, 1
-        ];
-        projMat = [
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 1,
-            0, 0, 0, 0
-        ];
-
-        transMat = [
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            transVector[0], transVector[1], transVector[2], 1
-        ];
-        rotateMat = [
-            Math.cos(0), 0, -Math.sin(0), 0,
-            0, 1, 0, 0,
-            Math.sin(0), 0, Math.cos(0), 0,
-            0, 0, 0, 1
-        ];
+        currentObject.reset();
         camera.updateDefault();
         render();
     })
     // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube), gl.STATIC_DRAW);
 
     var positionLoc = gl.getAttribLocation(program, 'vertPos');
-    var normLoc = gl.getUniformLocation(program, 'normMat');
     var objMatLoc = gl.getUniformLocation(program, 'objMat');
     var modViewLoc = gl.getUniformLocation(program, 'modelViewMat');
     var projLoc = gl.getUniformLocation(program, 'projMat');
     // ===================================================
 
     // ================ EVENT HANDLER ====================
+    // Save file
+    document.getElementById("save-button").addEventListener("click", function() {
+        if (currentObject) {
+            save(currentObject);
+        }
+    });
+
     let xSlider = document.getElementById('x-trans');
     xSlider.addEventListener('input', function() {
-        transVector[0] = xSlider.value * 2 / 800 - 1;
-        transMat = [
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            transVector[0], transVector[1], transVector[2], 1
-        ];
-        render();
+        if (currentObject) {
+            currentObject.updateTranslationX(xSlider.value * 2 / gl.canvas.width - 1);
+            render();
+        }
     });
 
     let ySlider = document.getElementById('y-trans');
     ySlider.addEventListener('input', function() {
-        transVector[1] = ySlider.value * 2 / 800 - 1;
-        transMat = [
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            transVector[0], transVector[1], transVector[2], 1
-        ];
-
-        render();
+        if (currentObject) {
+            currentObject.updateTranslationY(ySlider.value * 2 / gl.canvas.height - 1);
+            render();
+        }
     });
 
     let zSlider = document.getElementById('z-trans');
     zSlider.addEventListener('input', function() {
-        transVector[2] = zSlider.value * -2 / 800 + 1;
-        transMat = [
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            transVector[0], transVector[1], transVector[2], 1
-        ];
-
-        render();
+        if (currentObject) {
+            currentObject.updateTranslationZ(zSlider.value * -2 / 800 + 1);
+            render();
+        }
     });
 
-    let rotSlider_y = document.getElementById('y-rotate');
-    rotSlider_y.addEventListener('input', function() {
-        const rad = degToRad(rotSlider_y.value);
-        rotateMat = [
-            Math.cos(rad), 0, -Math.sin(rad), 0,
-            0, 1, 0, 0,
-            Math.sin(rad), 0, Math.cos(rad), 0,
-            0, 0, 0, 1
-        ];
-
-        render();
+    let rotSlider = document.getElementById('y-rotate');
+    rotSlider.addEventListener('input', function() {
+        if (currentObject) {
+            currentObject.updateRotationY(rotSlider.value);
+            render();
+        }
     });
 
     let rotSlider_x = document.getElementById('x-rotate');
     rotSlider_x.addEventListener('input', function() {
-        const rad = degToRad(rotSlider_x.value);
-        rotateMat = [
-            1, 0, 0, 0,
-            0,  Math.cos(rad),  -Math.sin(rad), 0,
-            0,  Math.sin(rad),  Math.cos(rad) ,0,
-            0, 0, 0, 1
-        ];
-
-        render();
+        if (currentObject) {
+            currentObject.updateRotationX(rotSlider_x.value);
+            render();
+        }
     });
 
     let rotSlider_z = document.getElementById('z-rotate');
     rotSlider_z.addEventListener('input', function() {
-        const rad = degToRad(rotSlider_z.value);
-        rotateMat = [
-            Math.cos(rad), - Math.sin(rad), 0, 0,
-            Math.sin(rad),  Math.cos(rad), 0, 0,
-            0, 0, 1 ,0,
-            0, 0, 0, 1
-        ];
-
-        render();
+        if (currentObject) {
+            currentObject.updateRotationZ(rotSlider_z.value);
+            render();
+        }
     });
 
     let scaleSlider = document.getElementById('obj-scale');
     scaleSlider.addEventListener('input', function() {
-        const scale = scaleSlider.value/360;
-        scaleMat = [
-            scale, 0, 0, 0,
-            0, scale, 0, 0, 
-            0, 0, scale, 0, 
-            0, 0, 0, 1
-        ];
-        render();
+        if (currentObject) {
+            currentObject.updateScale(scaleSlider.value/360);
+            render();
+        }
     });
 
     let camTranSlider = document.getElementById('cam-trans');
     camTranSlider.addEventListener('input', function() {
-        camera.updateTranslationZ(camTranSlider.value * 10 / 800 - 5);
-        render();
+        if (currentObject) {
+            camera.updateTranslationZ(camTranSlider.value * 10 / 800 - 5);
+            render();
+        }
     });
 
     let camRotSliderY = document.getElementById('cam-rotate-y');
     camRotSliderY.addEventListener('input', function() {
-        camera.updateRotationY(camRotSliderY.value);
-        render();
+        if (currentObject) {
+            camera.updateRotationY(camRotSliderY.value);
+            render();
+        }
     });
     let camRotSliderX = document.getElementById('cam-rotate-x');
     camRotSliderX.addEventListener('input', function() {
-        camera.updateRotationX(camRotSliderX.value);
-        render();
+        if (currentObject) {
+            camera.updateRotationX(camRotSliderX.value);
+            render();
+        }
     });
 
     // ===================================================
     render();
 
-    // ==================== DEBUG SECTION ===============
-
-    // ==================================================
-
     function render() {
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        if (currentObject) {
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        gl.enable(gl.CULL_FACE);
+            gl.enable(gl.CULL_FACE);
 
-        // gl.enable(gl.DEPTH_TEST);
+            // gl.enable(gl.DEPTH_TEST);
 
-        gl.vertexAttribPointer(
-            positionLoc,
-            3,
-            gl.FLOAT,
-            gl.FALSE,
-            3 * Float32Array.BYTES_PER_ELEMENT,
-            0
-        );
-        gl.enableVertexAttribArray(positionLoc);
-    
-        let objMat = multiply(identity, transMat);
-        objMat = multiply(objMat, rotateMat);
-        objMat = multiply(objMat, scaleMat);
-                
-        const modelView = camera.calculateModelView();
+            gl.vertexAttribPointer(
+                positionLoc,
+                3,
+                gl.FLOAT,
+                gl.FALSE,
+                3 * Float32Array.BYTES_PER_ELEMENT,
+                0
+            );
+            gl.enableVertexAttribArray(positionLoc);
+        
+            const objMat = currentObject.calculateObjectMat();
+            const modelView = camera.calculateModelView();
 
-        gl.uniformMatrix4fv(normLoc, false, new Float32Array(normMat));
-        gl.uniformMatrix4fv(objMatLoc, false, new Float32Array(objMat));
-        gl.uniformMatrix4fv(modViewLoc, false, new Float32Array(modelView));
-        gl.uniformMatrix4fv(projLoc, false, new Float32Array(projMat));
-    
-        gl.drawArrays(gl.TRIANGLES, 0, 1000);
+            gl.uniformMatrix4fv(objMatLoc, false, new Float32Array(objMat));
+            gl.uniformMatrix4fv(modViewLoc, false, new Float32Array(modelView));
+            gl.uniformMatrix4fv(projLoc, false, new Float32Array(projMat));
+        
+            gl.drawArrays(gl.TRIANGLES, 0, currentObject.nVertices);
+        }
     }
 }
 main();

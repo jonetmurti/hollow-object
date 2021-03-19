@@ -27,6 +27,7 @@ class Camera
             0, 0, 0, 0
         ];
     }
+
     updateDefault() {
         this.rotationX = [
             1, 0, 0,
