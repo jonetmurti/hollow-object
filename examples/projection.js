@@ -222,15 +222,34 @@ function main() {
     let projection = document.getElementById('projection');
     projection.addEventListener('change', function() {
         if (projection.value=="ortographic") {
+            //Reset First
+            currentObject.reset();
+            camera.updateDefault();
+            projectionMatrix = projMat;
+            render();
+
             projectionMatrix = camera.ortographic();
             camera.updateTranslationZ(450* 10 / 800 - 5);
             document.getElementById('cam-trans').value=450;
         } else if (projection.value=="oblique") {
+            currentObject.reset();
+            camera.updateDefault();
+            projectionMatrix = projMat;
+            render();
+
             projectionMatrix = null;
         } else if (projection.value=="perspective") {
+            currentObject.reset();
+            camera.updateDefault();
+            projectionMatrix = projMat;
+            render();
+
             projectionMatrix = camera.perspective();
         } else {
+            currentObject.reset();
+            camera.updateDefault();
             projectionMatrix = projMat;
+            render();
         }
         render();
     });
