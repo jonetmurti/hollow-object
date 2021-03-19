@@ -91,8 +91,8 @@ function main() {
     var projMat = [
         1, 0, 0, 0,
         0, 1, 0, 0,
-        0, 0, 1, 1,
-        0, 0, 0, 0
+        0, 0, 1, 0,
+        0, 0, 0, 1
     ];
 
     var identity = [
@@ -117,7 +117,7 @@ function main() {
         transVector[0], transVector[1], transVector[2], 1
     ];
     // ===================================================
-
+    
     // ================= CAMERA ==========================
     let camera = new Camera(gl.canvas.width, gl.canvas.height);
     // ===================================================
@@ -157,6 +157,7 @@ function main() {
             0, 0, 1, 1,
             0, 0, 0, 0
         ];
+
         transMat = [
             1, 0, 0, 0,
             0, 1, 0, 0,
@@ -169,16 +170,8 @@ function main() {
             Math.sin(0), 0, Math.cos(0), 0,
             0, 0, 0, 1
         ];
-        scaleMat = [
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            0, 0, 0, 1
-        ];
         camera.updateDefault();
         render();
-
-
     })
     // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube), gl.STATIC_DRAW);
 
@@ -321,10 +314,9 @@ function main() {
         gl.enableVertexAttribArray(positionLoc);
     
         let objMat = multiply(identity, transMat);
-    
         objMat = multiply(objMat, rotateMat);
         objMat = multiply(objMat, scaleMat);
-    
+                
         const modelView = camera.calculateModelView();
 
         gl.uniformMatrix4fv(normLoc, false, new Float32Array(normMat));
