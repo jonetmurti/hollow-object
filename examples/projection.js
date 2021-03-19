@@ -228,13 +228,39 @@ function main() {
         render();
     });
 
-    let rotSlider = document.getElementById('y-rotate');
-    rotSlider.addEventListener('input', function() {
-        const rad = degToRad(rotSlider.value);
+    let rotSlider_y = document.getElementById('y-rotate');
+    rotSlider_y.addEventListener('input', function() {
+        const rad = degToRad(rotSlider_y.value);
         rotateMat = [
             Math.cos(rad), 0, -Math.sin(rad), 0,
             0, 1, 0, 0,
             Math.sin(rad), 0, Math.cos(rad), 0,
+            0, 0, 0, 1
+        ];
+
+        render();
+    });
+
+    let rotSlider_x = document.getElementById('x-rotate');
+    rotSlider_x.addEventListener('input', function() {
+        const rad = degToRad(rotSlider_x.value);
+        rotateMat = [
+            1, 0, 0, 0,
+            0,  Math.cos(rad),  -Math.sin(rad), 0,
+            0,  Math.sin(rad),  Math.cos(rad) ,0,
+            0, 0, 0, 1
+        ];
+
+        render();
+    });
+
+    let rotSlider_z = document.getElementById('z-rotate');
+    rotSlider_z.addEventListener('input', function() {
+        const rad = degToRad(rotSlider_z.value);
+        rotateMat = [
+            Math.cos(rad), - Math.sin(rad), 0, 0,
+            Math.sin(rad),  Math.cos(rad), 0, 0,
+            0, 0, 1 ,0,
             0, 0, 0, 1
         ];
 
