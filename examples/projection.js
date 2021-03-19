@@ -121,6 +121,7 @@ function main() {
     reset.addEventListener("click", function () {
         currentObject.reset();
         camera.updateDefault();
+        projectionMatrix = projMat;
         render();
     })
     // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube), gl.STATIC_DRAW);
@@ -222,6 +223,8 @@ function main() {
     projection.addEventListener('change', function() {
         if (projection.value=="ortographic") {
             projectionMatrix = camera.ortographic();
+            camera.updateTranslationZ(450* 10 / 800 - 5);
+            document.getElementById('cam-trans').value=450;
         } else if (projection.value=="oblique") {
             projectionMatrix = null;
         } else if (projection.value=="perspective") {

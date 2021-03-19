@@ -40,6 +40,17 @@ class Camera
         ];
 
         this.translation = [0, 0, -2];
+        document.getElementById('x-trans').value=400;
+        document.getElementById('y-trans').value=400;
+        document.getElementById('z-trans').value=400;
+        document.getElementById('x-rotate').value=0;
+        document.getElementById('y-rotate').value=0;
+        document.getElementById('z-rotate').value=0;
+        document.getElementById('obj-scale').value=360;
+        document.getElementById('cam-trans').value=225;
+        document.getElementById('cam-rotate-x').value=0;
+        document.getElementById('cam-rotate-y').value=0;
+        document.getElementById('projection').value="default";
     }
     updateRotationX(deg) {
         const rad = degToRad(deg);
@@ -116,7 +127,7 @@ class Camera
             2/(right - left), 0, 0, 0,
             0, 2/(top - bot), 0, 0,
             0, 0, -2/(far - near), 0,
-            -1*(left + right)/a, -1*(top + bot)/b, -1*(far + near )/c, 1
+            -1*(left + right)/(right - left), -1*(top + bot)/(top - bot), -1*(far + near )/(far - near), 1
         ];
         return matrix;
     }
