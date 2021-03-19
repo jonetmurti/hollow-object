@@ -141,6 +141,45 @@ function main() {
             render();
         }
     })  
+
+    let reset = document.getElementById("reset");
+    reset.addEventListener("click", function () {
+        transVector = [0, 0, 0];
+        scaleMat = [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        ];
+        projMat = [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 1,
+            0, 0, 0, 0
+        ];
+        transMat = [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            transVector[0], transVector[1], transVector[2], 1
+        ];
+        rotateMat = [
+            Math.cos(0), 0, -Math.sin(0), 0,
+            0, 1, 0, 0,
+            Math.sin(0), 0, Math.cos(0), 0,
+            0, 0, 0, 1
+        ];
+        scaleMat = [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        ];
+        camera.updateDefault();
+        render();
+
+
+    })
     // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube), gl.STATIC_DRAW);
 
     var positionLoc = gl.getAttribLocation(program, 'vertPos');
