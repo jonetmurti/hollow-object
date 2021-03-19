@@ -120,4 +120,25 @@ class Camera
         ];
         return matrix;
     }
+
+    perspective() {
+        const fovY = 90;
+        const far = 5;
+        const near = 1;
+        const aspect = 1;
+
+        const cotan = Math.tan(degToRad(90) - degToRad(fovY)/2);
+        const rangeZ = near - far;
+
+        return [
+            cotan/aspect, 0, 0, 0,
+            0, cotan, 0, 0,
+            0, 0, -1*(near + far)/rangeZ, 1,
+            0, 0, 2*far*near/rangeZ, 0
+        ];
+    }
+
+    oblique() {
+        // TODO : implement oblique transformation
+    }
 }

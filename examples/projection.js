@@ -225,7 +225,7 @@ function main() {
         } else if (projection.value=="oblique") {
             projectionMatrix = null;
         } else if (projection.value=="perspective") {
-            projectionMatrix = null;
+            projectionMatrix = camera.perspective();
         } else {
             projectionMatrix = projMat;
         }
