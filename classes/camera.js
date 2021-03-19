@@ -18,7 +18,7 @@ class Camera
             0, 0, 1
         ];
 
-        this.translation = [0, 0, 0];
+        this.translation = [0, 0, -2];
 
         this.perspective = [
             1, 0, 0, 0,
@@ -28,6 +28,33 @@ class Camera
         ];
     }
 
+    updateDefault() {
+        this.rotationX = [
+            1, 0, 0,
+            0, 1, 0,
+            0, 0, 1
+        ];
+        this.rotationY = [
+            1, 0, 0,
+            0, 1, 0,
+            0, 0, 1
+        ];
+        
+        this.rotationZ = [
+            1, 0, 0,
+            0, 1, 0,
+            0, 0, 1
+        ];
+
+        this.translation = [0, 0, -2];
+
+        this.perspective = [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 1,
+            0, 0, 0, 0
+        ];
+    }
     updateRotationX(deg) {
         const rad = degToRad(deg);
         const cos = Math.cos(rad);
@@ -76,6 +103,7 @@ class Camera
         eye = matrixVectorMul(this.rotationY, eye);
         eye = matrixVectorMul(this.rotationX, eye);
         eye = matrixVectorMul(this.rotationZ, eye);
+        
         let zaxis = normalize(subtract(at, eye));
         let xaxis = normalize(cross(zaxis, up));
         let yaxis = cross(xaxis, zaxis);

@@ -11,26 +11,36 @@
     </canvas>
 
     <div>
-        x-trans : <input type="range" min="0" max="800" value="400" id="x-trans">
+        obj-x-trans : <input type="range" min="0" max="800" value="400" id="x-trans">
     </div>
     <div>
-        y-trans : <input type="range" min="0" max="800" value="400" id="y-trans">
+        obj-y-trans : <input type="range" min="0" max="800" value="400" id="y-trans">
     </div>
     <div>
-        z-trans : <input type="range" min="0" max="800" value="400" id="z-trans">
+        obj-z-trans : <input type="range" min="0" max="800" value="400" id="z-trans">
     </div>
     <div>
-        y-rotate : <input type="range" min="-360" max="360" value="0" id="y-rotate">
+        obj-x-rotate : <input type="range" min="-360" max="360" value="0" id="x-rotate">
     </div>
     <div>
-        cam-trans : <input type="range" min="0" max="800" value="400" id="cam-trans">
+        obj-y-rotate : <input type="range" min="-360" max="360" value="0" id="y-rotate">
     </div>
     <div>
-        cam-rotate-x : <input type="range" min="-360" max="360" value="0" id="cam-rotate-x">
+        obj-z-rotate : <input type="range" min="-360" max="360" value="0" id="z-rotate">
     </div>
     <div>
-        cam-rotate-y : <input type="range" min="-360" max="360" value="0" id="cam-rotate-y">
+        obj-scale: <input type="range" min="1" max="720" value="360" id="obj-scale">
     </div>
+    <div>
+        cam-trans : <input type="range" min="0" max="450" value="225" id="cam-trans">
+    </div>
+    <div>
+        cam-x-rotate : <input type="range" min="-360" max="360" value="0" id="cam-rotate-x">
+    </div>
+    <div>
+        cam-y-rotate : <input type="range" min="-360" max="360" value="0" id="cam-rotate-y">
+    </div>
+
     <div>
         <label for="hollow">Choose Hollow Object:</label>
         <select name="hollow" id="hollow">
@@ -41,11 +51,15 @@
         </select>
     </div>
     <div>
+        <button id="reset">Reset Default</button>
+    </div>
+    <div>
         <span>
             <button id="save-button">Save</button>
             <input id="load-button" type="file" accept="application/json">
         </span>
     </div>
+
     <script type="text/javascript" src="../libs/matrix.js"></script>
     <script type="text/javascript" src="../libs/vector.js"></script>
     <script type="text/javascript" src="../objects/cube.js"></script>

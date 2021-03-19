@@ -164,6 +164,14 @@ function main() {
         render();
     });
 
+    let reset = document.getElementById("reset");
+    reset.addEventListener("click", function () {
+        currentObject.reset();
+        camera.updateDefault();
+        render();
+    })
+    // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube), gl.STATIC_DRAW);
+
     var positionLoc = gl.getAttribLocation(program, 'vertPos');
     var objMatLoc = gl.getUniformLocation(program, 'objMat');
     var modViewLoc = gl.getUniformLocation(program, 'modelViewMat');
@@ -210,6 +218,30 @@ function main() {
         }
     });
 
+    let rotSlider_x = document.getElementById('x-rotate');
+    rotSlider_x.addEventListener('input', function() {
+        if (currentObject) {
+            currentObject.updateRotationX(rotSlider_x.value);
+            render();
+        }
+    });
+
+    let rotSlider_z = document.getElementById('z-rotate');
+    rotSlider_z.addEventListener('input', function() {
+        if (currentObject) {
+            currentObject.updateRotationZ(rotSlider_z.value);
+            render();
+        }
+    });
+
+    let scaleSlider = document.getElementById('obj-scale');
+    scaleSlider.addEventListener('input', function() {
+        if (currentObject) {
+            currentObject.updateScale(scaleSlider.value/360);
+            render();
+        }
+    });
+
     let camTranSlider = document.getElementById('cam-trans');
     camTranSlider.addEventListener('input', function() {
         if (currentObject) {
@@ -234,7 +266,6 @@ function main() {
     });
 
     // ===================================================
-
     render();
 
     function render() {
@@ -263,7 +294,6 @@ function main() {
             gl.uniformMatrix4fv(projLoc, false, new Float32Array(projMat));
         
             gl.drawArrays(gl.TRIANGLES, 0, currentObject.nVertices);
-            console.log(currentObject);
         }
     }
 }

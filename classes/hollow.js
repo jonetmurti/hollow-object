@@ -43,6 +43,38 @@ class Hollow
         this.translation = matrices.translation;
     }
 
+    reset() {
+        this.scale = [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        ];
+
+        this.rotationY = [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        ];
+
+        this.rotationX = [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        ];
+
+        this.rotationZ = [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        ];
+
+        this.translation = [0, 0, 0];
+    }
+
     updateTranslationX(value) {
         this.translation[0] = value;
     }
@@ -56,7 +88,14 @@ class Hollow
     }
 
     updateRotationX(deg) {
+        const rad = degToRad(deg);
+        const cos = Math.cos(rad);
+        const sin = Math.sin(rad);
 
+        this.rotationX[5] = cos;
+        this.rotationX[6] = sin;
+        this.rotationX[9] = -sin;
+        this.rotationX[10] = cos;  
     }
 
     updateRotationY(deg) {
@@ -71,11 +110,23 @@ class Hollow
     }
 
     updateRotationZ(deg) {
+        const rad = degToRad(deg);
+        const cos = Math.cos(rad);
+        const sin = Math.sin(rad);
 
+        this.rotationZ[0] = cos;
+        this.rotationZ[1] = sin;
+        this.rotationZ[4] = -sin;
+        this.rotationZ[5] = cos;
     }
 
-    updateScale(k) {
-
+    updateScale(scale) {
+        this.scale = [
+            scale, 0, 0, 0,
+            0, scale, 0, 0, 
+            0, 0, scale, 0, 
+            0, 0, 0, 1
+        ];
     }
 
     calculateObjectMat() {
