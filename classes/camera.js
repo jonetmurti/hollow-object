@@ -20,8 +20,6 @@ class Camera
 
         this.translation = [0, 0, 0];
 
-       
-
         this.perspective = [
             1, 0, 0, 0,
             0, 1, 0, 0,

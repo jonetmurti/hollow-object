@@ -11,7 +11,7 @@ let D = [-a*(t_triangle - w - CF)/(2*t_triangle), w*t/t_triangle, a*((w/t_triang
 let E = [a*(t_triangle - w - CF)/(2*t_triangle), w*t/t_triangle, a*((w/t_triangle) - 1)/2];
 let F = [0, t*(1 - CF/t_triangle), a*((t_triangle - CF)/t_triangle - 1)/2]
 
-let pyramid = [
+let hollowLimas = [
     ...A,
     ...B,
     ...E,
