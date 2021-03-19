@@ -103,4 +103,21 @@ class Camera
             -dot(xaxis, eye), -dot(yaxis, eye), -dot(zaxis, eye), 1
         ];
     }
+
+    ortographic() {
+        var left = -2;
+        var right = 2;
+        var bot = -2;
+        var top = 2;
+        var near = 0.1;
+        var far =100;
+ 
+        var matrix = [
+            2/(right - left), 0, 0, 0,
+            0, 2/(top - bot), 0, 0,
+            0, 0, -2/(far - near), 0,
+            -1*(left + right)/a, -1*(top + bot)/b, -1*(far + near )/c, 1
+        ];
+        return matrix;
+    }
 }
