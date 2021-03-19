@@ -19,13 +19,6 @@ class Camera
         ];
 
         this.translation = [0, 0, -2];
-
-        this.perspective = [
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 1,
-            0, 0, 0, 0
-        ];
     }
 
     updateDefault() {
@@ -47,13 +40,6 @@ class Camera
         ];
 
         this.translation = [0, 0, -2];
-
-        this.perspective = [
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 1,
-            0, 0, 0, 0
-        ];
     }
     updateRotationX(deg) {
         const rad = degToRad(deg);
