@@ -18,7 +18,7 @@ class Camera
             0, 0, 1
         ];
 
-        this.translation = [0, 0, 0];
+        this.translation = [0, 0, -2];
 
        
 
@@ -78,6 +78,7 @@ class Camera
         eye = matrixVectorMul(this.rotationY, eye);
         eye = matrixVectorMul(this.rotationX, eye);
         eye = matrixVectorMul(this.rotationZ, eye);
+        
         let zaxis = normalize(subtract(at, eye));
         let xaxis = normalize(cross(zaxis, up));
         let yaxis = cross(xaxis, zaxis);

@@ -132,10 +132,13 @@ function main() {
     selectObject.addEventListener('change', function() {
         if (selectObject.value=="limas") {
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollow.hollowlimas), gl.STATIC_DRAW);
+            render();
         } else if (selectObject.value=="kubus") {
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollow.hollowcubic), gl.STATIC_DRAW);
+            render();
         } else {
-                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollow.hollowprisma), gl.STATIC_DRAW);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hollow.hollowprisma), gl.STATIC_DRAW);
+            render();
         }
     })  
     // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube), gl.STATIC_DRAW);
@@ -157,7 +160,6 @@ function main() {
             0, 0, 1, 0,
             transVector[0], transVector[1], transVector[2], 1
         ];
-
         render();
     });
 
@@ -200,6 +202,18 @@ function main() {
         render();
     });
 
+    let scaleSlider = document.getElementById('obj-scale');
+    scaleSlider.addEventListener('input', function() {
+        const scale = scaleSlider.value/360;
+        scaleMat = [
+            scale, 0, 0, 0,
+            0, scale, 0, 0, 
+            0, 0, scale, 0, 
+            0, 0, 0, 1
+        ];
+        render();
+    });
+
     let camTranSlider = document.getElementById('cam-trans');
     camTranSlider.addEventListener('input', function() {
         camera.updateTranslationZ(camTranSlider.value * 10 / 800 - 5);
@@ -218,7 +232,6 @@ function main() {
     });
 
     // ===================================================
-
     render();
 
     // ==================== DEBUG SECTION ===============
@@ -243,6 +256,7 @@ function main() {
         gl.enableVertexAttribArray(positionLoc);
     
         let objMat = multiply(identity, transMat);
+    
         objMat = multiply(objMat, rotateMat);
         objMat = multiply(objMat, scaleMat);
     
