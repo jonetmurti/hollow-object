@@ -58,63 +58,15 @@ function main() {
     }
 
     // ================ MATRICES =========================
-    var normMat = [
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 3, 1
-    ];
-
-    var scaleMat = [
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
-    ];
-
-    var rotateMat = [
-        Math.cos(0), 0, -Math.sin(0), 0,
-        0, 1, 0, 0,
-        Math.sin(0), 0, Math.cos(0), 0,
-        0, 0, 0, 1
-    ];
-
-    var transVector = [0, 0, 0];
-    var transMat = [
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        transVector[0], transVector[1], transVector[2], 1
-    ];
-
+    
     var projMat = [
         1, 0, 0, 0,
         0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
+        0, 0, 1, 1,
+        0, 0, 0, 0
     ];
 
-    var identity = [
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
-    ];
-
-    var camRotate = [
-        Math.cos(0), 0, -Math.sin(0), 0,
-        0, 1, 0, 0,
-        Math.sin(0), 0, Math.cos(0), 0,
-        0, 0, 0, 1
-    ];
-
-    var camTransVec = [0, 0, 0];
-    var camTrans = [
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        transVector[0], transVector[1], transVector[2], 1
-    ];
+    
     // ===================================================
 
     // ================= OBJECT & CAMERA =====================
@@ -276,6 +228,22 @@ function main() {
 
             // gl.enable(gl.DEPTH_TEST);
 
+            var projectionMatrix = projMat;
+            var projection = document.getElementById('projection');
+            projection.addEventListener('change', function() {
+
+                if (selectObject.value=="ortographic") {
+                    projectionMatrix = camera.ortographic();
+                } else if (selectObject.value=="oblique") {
+                    projectionMatrix = null;
+                } else if (selectObject.value=="perspective") {
+                    projectionMatrix = null;
+                } else {
+                    projectionMatrix = projMat;
+                }
+            });
+
+
             gl.vertexAttribPointer(
                 positionLoc,
                 3,
@@ -291,7 +259,7 @@ function main() {
 
             gl.uniformMatrix4fv(objMatLoc, false, new Float32Array(objMat));
             gl.uniformMatrix4fv(modViewLoc, false, new Float32Array(modelView));
-            gl.uniformMatrix4fv(projLoc, false, new Float32Array(projMat));
+            gl.uniformMatrix4fv(projLoc, false, new Float32Array(projectionMatrix));
         
             gl.drawArrays(gl.TRIANGLES, 0, currentObject.nVertices);
         }
