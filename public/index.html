@@ -11,9 +11,10 @@
         <link rel="stylesheet" type="text/css" href="css/other.css">
 
         <!--JS link-->
-        <script src="js/menu.js" defer></script>
-        <script src="js/slider.js" defer></script>
-        <script src="js/help.js" defer></script>
+        <script src="js/pages/menu.js" defer></script>
+        <script src="js/pages/slider.js" defer></script>
+        <script src="js/pages/help.js" defer></script>
+        <script type="module" src="js/pages/saveload.js" defer></script>
     </head>
 
     <body>
@@ -115,8 +116,8 @@
             </div>
 
             <div class="sidenav-section">
-                <button style="float: left;" class="sidenav-button save-load">Save</button>
-                <button style="float: right;" class="sidenav-button save-load">Load</button> <input type="file" id="load-file" onchange="" style="display: none;">
+                <button style="float: left;" class="sidenav-button save-load" onclick="save()">Save</button>
+                <button style="float: right;" class="sidenav-button save-load" onclick="load()">Load</button> <input type="file" id="load-file" onchange="loadFile(this)" style="display: none;">
             </div>
         </div>
 
@@ -147,9 +148,5 @@
                 </div>
             </div>
         </div>
-
-        <!--JS link-->
-        <script src="js/draw.js" defer></script>
-        <script src="js/help.js" defer></script>
     </body>
 </html>
