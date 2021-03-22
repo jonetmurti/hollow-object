@@ -164,6 +164,17 @@ class Camera
     }
 
     oblique() {
-        // TODO : implement oblique transformation
+        var theta = degToRad(15);
+        var phi = degToRad(60);
+
+        var cotT = -1 / Math.tan(theta);
+        var cotP = -1 / Math.tan(phi);
+
+        return [
+            1, 0, cotT, 0,
+            0, 1, cotP, 0,
+            0, 0,  1  , 0,
+            0, 0,  0  , 1
+        ];
     }
 }

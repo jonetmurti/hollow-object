@@ -9,74 +9,119 @@
         <!--CSS link-->
         <link rel="stylesheet" type="text/css" href="css/main.css">
         <link rel="stylesheet" type="text/css" href="css/other.css">
+
+        <!--JS link-->
+        <script src="js/menu.js" defer></script>
+        <script src="js/slider.js" defer></script>
+        <script src="js/help.js" defer></script>
     </head>
 
     <body>
         <!--MAIN PART-->
+        <button id="sidenav-open-button" class="util-button" onclick="openSideNav()">Menu</button>
+
         <h1 class="main-title">Hollow Object</h1>
 
-        <div class="slider-container">
-            <div class="slider-input">
-                <!-- <p class="slider-text"></p> -->
-                obj-x-trans :
-                <input class="slider" type="range" min="0" max="800" value="400" id="x-trans">
-            </div>
-            <div class="slider-input">
-                obj-y-trans : 
-                <input class="slider" type="range" min="0" max="800" value="400" id="y-trans">
-            </div>
-            <div class="slider-input">
-                obj-z-trans : 
-                <input class="slider" type="range" min="0" max="800" value="400" id="z-trans">
-            </div>
-            <div class="slider-input">
-                obj-x-rotate : 
-                <input class="slider" type="range" min="-360" max="360" value="0" id="x-rotate">
-            </div>
-            <div class="slider-input">
-                obj-y-rotate : 
-                <input class="slider" type="range" min="-360" max="360" value="0" id="y-rotate">
-            </div>
-            <div class="slider-input">
-                obj-z-rotate : 
-                <input class="slider" type="range" min="-360" max="360" value="0" id="z-rotate">
-            </div>
-            <div class="slider-input">
-                obj-scale: 
-                <input class="slider" type="range" min="1" max="720" value="360" id="obj-scale">
-            </div>
-        </div>
-
-        <div class="main-container">
-            <canvas class="main-canvas" id="gl-canvas" title="Canvas to show your image"></canvas>
+        <div class="sidenav-container">
             
-            <div class="draw-input-container">
-                <select id="hollow" class="select">
+            <button id="sidenav-close-button" onclick="closeSideNav()">&times;</button>
+            <div class="sidenav-section">
+                <select id="hollow">
                     <option class="disabled-option" disabled selected>Select item to draw</option>
                     <option value="limas">Pyramid</option>
                     <option value="kubus">Cube</option>
-                    <option value="limaskubus">Hexagon</option>
+                    <option value="hexagon">Hexagon</option>
                 </select>
-                <button id="shading-button" class="util-button" onclick="turnOnOffShading()">Shading OFF</button>
-                <button id="reset-button" class="util-button">Reset</button>
             </div>
 
-            <div class="util-button-container">
-                <button style="margin-right: 2.5px;" class="util-button save-load">Save</button>
-                <button style="margin-left: 2.5px; margin-right: 5px;" class="util-button save-load">Load</button> <input type="file" id="load-file" onchange="" style="display: none;">
-                <select id="projection" class="select">
+            <div class="sidenav-section">
+                <div id="shading-button-ON">
+                    <input type="radio" name="shading" value="on"><label class="radio-label">Shading ON</label>
+                </div>
+                <div id="shading-button-OFF">
+                    <input type="radio" name="shading" value="off"><label class="radio-label">Shading OFF</label>
+                </div>
+            </div>
+
+            <div class="sidenav-section">
+                <select id="projection">
                     <option class="disabled-option" disabled selected>Select projection</option>
                     <option value="default">Default</option>
                     <option value="ortographic">Ortographic</option>
                     <option value="perspective">Perspective</option>
                     <option value="oblique">Oblique</option>
                 </select>
-                <button id="help" class="util-button" onclick="help()">Help</button>
+            </div>
+
+            <table class="sidenav-section">
+                <tr class="slider-input-container">
+                    <!-- <p class="slider-text"></p> -->
+                    <td class="slider-label">Obj-X-trans:</td>
+                    <td class="slider-col">
+                        <input class="slider" type="range" min="0" max="800" value="400" id="x-trans" onchange="changeValSlider(0)">
+                    </td>
+                    <td class="slider-val">400</td>
+                </tr>
+                <tr class="slider-input-container">
+                    <td class="slider-label">Obj-Y-trans:</td>
+                    <td class="slider-col">
+                        <input class="slider" type="range" min="0" max="800" value="400" id="y-trans" onchange="changeValSlider(1)">
+                    </td>
+                    <td class="slider-val">400</td>
+                </tr>
+                <tr class="slider-input-container">
+                    <td class="slider-label">Obj-Z-trans:</td>
+                    <td class="slider-col">
+                        <input class="slider" type="range" min="0" max="800" value="400" id="z-trans" onchange="changeValSlider(2)">
+                    </td>
+                    <td class="slider-val">400</td>
+                </tr>
+                <tr class="slider-input-container">
+                    <td class="slider-label">Obj-X-rotate:</td> 
+                    <td class="slider-col">
+                        <input class="slider" type="range" min="-360" max="360" value="0" id="x-rotate" onchange="changeValSlider(3)">
+                    </td>
+                    <td class="slider-val">0</td>
+                </tr>
+                <tr class="slider-input-container">
+                    <td class="slider-label">Obj-Y-rotate:</td>
+                    <td class="slider-col">
+                        <input class="slider" type="range" min="-360" max="360" value="0" id="y-rotate" onchange="changeValSlider(4)">
+                    </td>
+                    <td class="slider-val">0</td>
+                </tr>
+                <tr class="slider-input-container">
+                    <td class="slider-label">Obj-Z-rotate:</td>
+                    <td class="slider-col">
+                        <input class="slider" type="range" min="-360" max="360" value="0" id="z-rotate" onchange="changeValSlider(5)">
+                    </td>
+                    <td class="slider-val">0</td>
+                </tr>
+                <tr class="slider-input-container">
+                    <td class="slider-label">Obj-scaling:</td>
+                    <td class="slider-col">
+                        <input class="slider" type="range" min="1" max="720" value="360" id="obj-scale" onchange="changeValSlider(6)">
+                    </td>
+                    <td class="slider-val">360</td>
+                </tr>
+            </table>
+
+            <div class="sidenav-section">
+                <button class="sidenav-button single-button">Reset</button>
+            </div>
+
+            <div class="sidenav-section">
+                <button id="help" class="sidenav-button single-button" onclick="help()">Help</button>
+            </div>
+
+            <div class="sidenav-section">
+                <button style="float: left;" class="sidenav-button save-load">Save</button>
+                <button style="float: right;" class="sidenav-button save-load">Load</button> <input type="file" id="load-file" onchange="" style="display: none;">
             </div>
         </div>
 
-        <div class="slider-container">
-            
+        <div class="main-container">
+            <canvas class="main-canvas" id="gl-canvas" title="Canvas to show your image"></canvas>
         </div>
 
         <footer class="web-footer">
