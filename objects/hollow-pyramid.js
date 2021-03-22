@@ -125,12 +125,12 @@ let leftNormal = normalize(cross(subtract(innerD, D), subtract(F, D)));
 let rightNormal = normalize(cross(subtract(innerE, E), subtract(F, E)));
 let bottomNormal = normalize(cross(subtract(B, A), subtract(innerA, A)));
 
-// negate(frontNormal);
-// negate(backNormal);
-// negate(topNormal);
-// negate(leftNormal);
-// negate(rightNormal);
-// negate(bottomNormal);
+negate(frontNormal);
+negate(backNormal);
+negate(topNormal);
+negate(leftNormal);
+negate(rightNormal);
+negate(bottomNormal);
 
 let faceNormals = [
     ...frontNormal,
