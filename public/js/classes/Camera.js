@@ -1,5 +1,8 @@
-class Camera 
-{
+import {
+    degToRad
+} from '../libs/matrix.js';
+
+export default class Camera {
     constructor(canvasWidth, canvasHeight) {
         this.rotationX = [
             1, 0, 0,

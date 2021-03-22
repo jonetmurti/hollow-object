@@ -4,6 +4,18 @@ body {
     background-color: #A2D2FF;
 
     font-family: 'Viga';
+    padding: 0;
+}
+
+.navbar {
+    background-color: #FFFFFF;
+
+    width: 100%;
+    height: 60px;
+
+    top: 0;
+    left: 0;
+
 }
 
 .main-title {
@@ -18,7 +30,7 @@ body {
     
     border-radius: 8px;
 
-    min-width: 600px;
+    min-width: 800px;
     height: auto;
 
     padding-top: 10px;
@@ -37,25 +49,23 @@ body {
     border: 5px solid #FFFFFF;
     border-radius: 8px;
 
-    width: 600px;
+    width: 800px;
     height: 600px;
 }
 
-.select {
+select {
     background-color: #A2D2FF;
     
     font-family: 'Viga';
-    font-size: 18px;
+    font-size: 20px;
     color: #FFFFFF;
 
-    border: 5px solid #FFFFFF;
+    border: 5px solid #A2D2FF;
     border-radius: 8px;
 
-    margin: 5px 0;
+    width: 350px;
 
     outline: none;
-
-    float: left;
 }
 
 .select:hover {
@@ -68,12 +78,6 @@ body {
 
 .disabled-option {
     color: #EEEEEE;
-}
-
-#shading-button {
-    font-size: 18px !important;
-    float: right;
-    margin-left: 5px;
 }
 
 #reset-button {
@@ -105,8 +109,137 @@ body {
     background-color: #FFAFCC;
 }
 
+.sidenav-container {
+    background-color: #FFFFFF;
+
+    text-align: center;
+
+    width: 0;
+    height: 100%;
+
+    padding-top: 40px;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    overflow-x: hidden;
+    transition: 0.5s;
+}
+
+.sidenav-section {
+    margin-top: 10px;
+    margin-left: 25px;
+    margin-bottom: 10px;
+    margin-right: 25px;
+}
+
+.sidenav-button {
+    background-color: #FFFFFF;
+
+    font-family: 'Viga';
+    font-size: 20px;
+    color: #A2D2FF;
+
+    border: 5px solid #A2D2FF;
+    border-radius: 8px;
+
+    outline: none;
+}
+
+.slide-input-container {
+    display: block;
+}
+
+.slider-label {
+    color: #A2D2FF;
+    text-align: left;
+    
+    width: 50%;
+}
+
+.slider-col {
+    width: 30%;
+}
+
+.slider {
+    width: 150px;
+}
+
+.slider-val {
+    color: #A2D2FF;
+    text-align: right;
+    width: 20%;
+}
+
+.single-button {
+    width: 350px;
+    margin-top: 10px;
+}
+
 .save-load {
+    width: 150px;
+    margin-top: 50px;
+}
+
+.sidenav-button:hover {
+    background-color: #EEEEEE;
+}
+
+.sidenav-button:active {
+    background-color: #A2D2FF;
+    
+    color: #FFFFFF;
+}
+
+#sidenav-open-button {
+    text-align: center;
+
+    position: absolute;
+    top: 50px;
+    transform: translate(20%, 0%);
+}
+
+#sidenav-close-button {
+    background-color: #FFFFFF;
+
+    font-family: 'Viga';
+    color: #A2D2FF;
+    font-size: 30px;
+
+    border: 5px solid #A2D2FF;
+    border-radius: 8px;
+
+    margin-right: 25px;
+    margin-bottom: 25px;
+
+    outline: none;
+    float: right;
+}
+
+#sidenav-close-button:hover {
+    background-color: #EEEEEE;
+}
+
+#sidenav-close-button:active {
+    background-color: #A2D2FF;
+    
+    color: #FFFFFF;
+}
+
+#shading-button-ON {
+    margin-bottom: 10px;
     float: left;
+}
+
+#shading-button-OFF {
+    margin-bottom: 10px;
+    float: right;
+}
+
+.radio-label {
+    font-size: 20px;
+    color: #A2D2FF;
 }
 
 .slider-container {
@@ -127,48 +260,9 @@ body {
     left: 19%;
 }
 
-.slider-input {
-    margin: 0px 10px;
-}
-
-.slider-text {
-    /* float: left; */
-}
-
-.slider {
-    /* float: right; */
-}
-
-#draw {
-    background-color: #FFFFFF !important;
-
-    color: #A2D2FF !important;
-
-    width: 400px;
-}
-
-#draw:hover {
-    background-color: #FFC8DD !important;
-
-    color: #FFFFFF !important;
-}
-
-#draw:active {
-    background-color: #FFAFCC !important;
-}
-
 #help {
     float: right;
     margin-left: 5px;
-}
-
-#hollow {
-    width: 410px;
-}
-
-#projection {
-    width: 400px;
-    font-size: 20px;
 }
 
 .web-footer {
