@@ -1,0 +1,1 @@
+Untuk melakukan reset ke default pada pilihan Hollow Object bersangkutan, maka bisa dilakukan dengan mengklik "Reset Default". "Reset Default akan mereset semua transformasi yang sudah dilakukan terhadap objek dan kamera dan mengembalikannya kepada posisi semula.

@@ -2,6 +2,7 @@ import Camera from './classes/Camera.js';
 import Hollow from './classes/Hollow.js';
 import { hollowCubic, normalHollowCubic } from './objects/hollow-cube.js';
 import { hollowLimas, limasNormals } from './objects/hollow-pyramid.js';
+import { hollowPrism, prismNormal } from './objects/hollow-prism.js';
 import { cube, cubeNormals } from './objects/cube.js';
 
 window.run = function run() {
@@ -92,7 +93,7 @@ window.run = function run() {
 
     // ================= OBJECT & CAMERA =====================
     var camera = new Camera(gl.canvas.width, gl.canvas.height);
-    var currentObject = null;
+    window.currentObject = null;
     var projectionMatrix = camera.perspective;
     // =======================================================
 
@@ -114,8 +115,8 @@ window.run = function run() {
     
     fileReader.onload = function(){
         data = JSON.parse(fileReader.result);
-        currentObject = new Hollow(data.vertices);
-        currentObject.loadMatrices(data.matrices);
+        window.currentObject = new Hollow(data.vertices);
+        window.currentObject.loadMatrices(data.matrices);
         // TODO : Load Color
         render();
         document.getElementById('hollow').value = '';
@@ -126,20 +127,20 @@ window.run = function run() {
     var selectObject = document.getElementById('hollow');
     selectObject.addEventListener('change', function() {
         if (selectObject.value=="limas") {
-            currentObject = new Hollow(hollowLimas, limasNormals);
+            window.currentObject = new Hollow(1, hollowLimas, limasNormals);
         } else if (selectObject.value=="kubus") {
-            currentObject = new Hollow(hollowCubic, normalHollowCubic);
-        } else if (selectObject.value=="hexagon") {
-            currentObject = new Hollow(hexagon, null);
+            window.currentObject = new Hollow(2, hollowCubic, normalHollowCubic);
+        } else if (selectObject.value=="prisma") {
+            window.currentObject = new Hollow(3, hollowPrism, prismNormal);
         } else {
-            currentObject = new Hollow(cube, cubeNormals);
+            window.currentObject = new Hollow(0, cube, cubeNormals);
         }
         render();
     });
 
     let reset = document.getElementById("reset");
     reset.addEventListener("click", function () {
-        currentObject.reset();
+        window.currentObject.reset();
         camera.updateDefault();
         projectionMatrix = camera.perspective();
         document.getElementById('projection').value="perspective";
@@ -157,70 +158,70 @@ window.run = function run() {
     // ================ EVENT HANDLER ====================
     // Save file
     // document.getElementById("save-button").addEventListener("click", function() {
-    //     if (currentObject) {
-    //         save(currentObject);
+    //     if (window.currentObject) {
+    //         save(window.currentObject);
     //     }
     // });
 
     let xSlider = document.getElementById('x-trans');
     xSlider.addEventListener('input', function() {
-        if (currentObject) {
-            currentObject.updateTranslationX(xSlider.value * 2 / gl.canvas.width - 1);
+        if (window.currentObject) {
+            window.currentObject.updateTranslationX(xSlider.value * 2 / gl.canvas.width - 1);
             render();
         }
     });
 
     let ySlider = document.getElementById('y-trans');
     ySlider.addEventListener('input', function() {
-        if (currentObject) {
-            currentObject.updateTranslationY(ySlider.value * 2 / gl.canvas.height - 1);
+        if (window.currentObject) {
+            window.currentObject.updateTranslationY(ySlider.value * 2 / gl.canvas.height - 1);
             render();
         }
     });
 
     let zSlider = document.getElementById('z-trans');
     zSlider.addEventListener('input', function() {
-        if (currentObject) {
-            currentObject.updateTranslationZ(zSlider.value * -2 / 800 + 1);
+        if (window.currentObject) {
+            window.currentObject.updateTranslationZ(zSlider.value * -2 / 800 + 1);
             render();
         }
     });
 
     let rotSlider = document.getElementById('y-rotate');
     rotSlider.addEventListener('input', function() {
-        if (currentObject) {
-            currentObject.updateRotationY(rotSlider.value);
+        if (window.currentObject) {
+            window.currentObject.updateRotationY(rotSlider.value);
             render();
         }
     });
 
     let rotSlider_x = document.getElementById('x-rotate');
     rotSlider_x.addEventListener('input', function() {
-        if (currentObject) {
-            currentObject.updateRotationX(rotSlider_x.value);
+        if (window.currentObject) {
+            window.currentObject.updateRotationX(rotSlider_x.value);
             render();
         }
     });
 
     let rotSlider_z = document.getElementById('z-rotate');
     rotSlider_z.addEventListener('input', function() {
-        if (currentObject) {
-            currentObject.updateRotationZ(rotSlider_z.value);
+        if (window.currentObject) {
+            window.currentObject.updateRotationZ(rotSlider_z.value);
             render();
         }
     });
 
     let scaleSlider = document.getElementById('obj-scale');
     scaleSlider.addEventListener('input', function() {
-        if (currentObject) {
-            currentObject.updateScale(scaleSlider.value/360);
+        if (window.currentObject) {
+            window.currentObject.updateScale(scaleSlider.value/360);
             render();
         }
     });
 
     let camTranSlider = document.getElementById('cam-trans');
     camTranSlider.addEventListener('input', function() {
-        if (currentObject) {
+        if (window.currentObject) {
             camera.updateTranslationZ(camTranSlider.value * 10 / 800 - 5);
             render();
         }
@@ -228,14 +229,14 @@ window.run = function run() {
 
     let camRotSliderY = document.getElementById('cam-rotate-y');
     camRotSliderY.addEventListener('input', function() {
-        if (currentObject) {
+        if (window.currentObject) {
             camera.updateRotationY(camRotSliderY.value);
             render();
         }
     });
     let camRotSliderX = document.getElementById('cam-rotate-x');
     camRotSliderX.addEventListener('input', function() {
-        if (currentObject) {
+        if (window.currentObject) {
             camera.updateRotationX(camRotSliderX.value);
             render();
         }
@@ -245,17 +246,17 @@ window.run = function run() {
     projection.addEventListener('change', function() {
         if (projection.value=="ortographic") {
             //Reset First
-            currentObject.reset();
+            window.currentObject.reset();
             camera.updateDefault();
             projectionMatrix = camera.ortographic();
             camera.updateTranslationZ(450* 10 / 800 - 5);
             document.getElementById('cam-trans').value=450;
         } else if (projection.value=="oblique") {
-            currentObject.reset();
+            window.currentObject.reset();
             camera.updateDefault();
             projectionMatrix = camera.oblique();
         } else if (projection.value=="perspective") {
-            currentObject.reset();
+            window.currentObject.reset();
             camera.updateDefault();
             projectionMatrix = camera.perspective();
         }
@@ -266,8 +267,8 @@ window.run = function run() {
     // ===================================================
     render();
 
-    function render() {
-        if (currentObject) {
+function render() {
+        if (window.currentObject) {
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
             gl.enable(gl.CULL_FACE);
@@ -275,7 +276,7 @@ window.run = function run() {
             // gl.enable(gl.DEPTH_TEST);
 
             gl.bindBuffer(gl.ARRAY_BUFFER, positionBuf);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(currentObject.vertices), gl.STATIC_DRAW);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(window.currentObject.vertices), gl.STATIC_DRAW);
             gl.vertexAttribPointer(
                 positionLoc,
                 3,
@@ -287,7 +288,7 @@ window.run = function run() {
             gl.enableVertexAttribArray(positionLoc);
 
             gl.bindBuffer(gl.ARRAY_BUFFER, normalBuf);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(currentObject.normals), gl.STATIC_DRAW);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(window.currentObject.normals), gl.STATIC_DRAW);
             gl.vertexAttribPointer(
                 normalLoc,
                 3,
@@ -298,7 +299,7 @@ window.run = function run() {
             );
             gl.enableVertexAttribArray(normalLoc);
         
-            const objMat = currentObject.calculateObjectMat();
+            const objMat = window.currentObject.calculateObjectMat();
             const modelView = camera.calculateModelView();
 
             gl.uniformMatrix4fv(objMatLoc, false, new Float32Array(objMat));
@@ -306,7 +307,7 @@ window.run = function run() {
             gl.uniformMatrix4fv(projLoc, false, new Float32Array(projectionMatrix));
             gl.uniform3fv(viewPosLoc, new Float32Array(camera.calculateEye()));
 
-            gl.drawArrays(gl.TRIANGLES, 0, currentObject.nVertices);
+            gl.drawArrays(gl.TRIANGLES, 0, window.currentObject.nVertices);
         }
     }
 }

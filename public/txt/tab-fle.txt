@@ -1,0 +1,3 @@
+Untuk menyimpan objek yang sudah ditransformasi beserta view cameranya maka bisa dilakukan dengan menekan tombol "Save" dan akan meng-exsport matriksnya kedalam bentuk file .json
+
+Untuk membaca file maka bisa dilakukan dengan mengklik "Load" untuk memilih file .json yang akan di-import ke dalam canvas

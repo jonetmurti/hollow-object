@@ -1,0 +1,7 @@
+Untuk memilih hollow objek yang diinginkan klik pada "Choose Hollow Object" dan pilih Limas/Kubus/prisma
+
+Untuk mengatur Translasi objek maka gunakan "Obj-X-trans" untuk translasi objek pada sumbu x, "Obj-Y-trans" untuk translasi objek pada sumbu y, "Obj-Z-trans" untuk translasi objek pada sumbu z
+
+Untuk mengatur Rotasi objek maka gunakan "Obj-X-rotate" untuk rotasi objek pada sumbu x, "Obj-Y-rotate" untuk rotasi objek pada sumbu y, "Obj-Z-trans" untuk translasi objek pada sumbu z
+
+Untuk melakukan Scaling objek maka gunakan "Obj-scale" untuk memperbesar atau mengecilkan objek
