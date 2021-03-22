@@ -50,8 +50,6 @@ body {
 
     border: 5px solid #FFFFFF;
     border-radius: 8px;
-    
-    width: 480px;
 
     margin: 5px 0;
 
@@ -75,6 +73,13 @@ body {
 #shading-button {
     font-size: 18px !important;
     float: right;
+    margin-left: 5px;
+}
+
+#reset-button {
+    font-size: 18px !important;
+    float: right;
+    margin-left: 5px;
 }
 
 .util-button {
@@ -104,6 +109,36 @@ body {
     float: left;
 }
 
+.slider-container {
+    border-radius: 8px;
+
+    background-color: #FFFFFF;
+
+    width: 280px;
+
+    height: auto;
+
+    padding: 5px 0px;
+
+    position: absolute;
+
+    top: 11%;
+
+    left: 19%;
+}
+
+.slider-input {
+    margin: 0px 10px;
+}
+
+.slider-text {
+    /* float: left; */
+}
+
+.slider {
+    /* float: right; */
+}
+
 #draw {
     background-color: #FFFFFF !important;
 
@@ -125,6 +160,15 @@ body {
 #help {
     float: right;
     margin-left: 5px;
+}
+
+#hollow {
+    width: 410px;
+}
+
+#projection {
+    width: 400px;
+    font-size: 20px;
 }
 
 .web-footer {

@@ -9,34 +9,74 @@
         <!--CSS link-->
         <link rel="stylesheet" type="text/css" href="css/main.css">
         <link rel="stylesheet" type="text/css" href="css/other.css">
-        
-        <!--JS link-->
-        <script src="js/draw.js" defer></script>
-        <script src="js/help.js" defer></script>
     </head>
 
     <body>
         <!--MAIN PART-->
         <h1 class="main-title">Hollow Object</h1>
+
+        <div class="slider-container">
+            <div class="slider-input">
+                <!-- <p class="slider-text"></p> -->
+                obj-x-trans :
+                <input class="slider" type="range" min="0" max="800" value="400" id="x-trans">
+            </div>
+            <div class="slider-input">
+                obj-y-trans : 
+                <input class="slider" type="range" min="0" max="800" value="400" id="y-trans">
+            </div>
+            <div class="slider-input">
+                obj-z-trans : 
+                <input class="slider" type="range" min="0" max="800" value="400" id="z-trans">
+            </div>
+            <div class="slider-input">
+                obj-x-rotate : 
+                <input class="slider" type="range" min="-360" max="360" value="0" id="x-rotate">
+            </div>
+            <div class="slider-input">
+                obj-y-rotate : 
+                <input class="slider" type="range" min="-360" max="360" value="0" id="y-rotate">
+            </div>
+            <div class="slider-input">
+                obj-z-rotate : 
+                <input class="slider" type="range" min="-360" max="360" value="0" id="z-rotate">
+            </div>
+            <div class="slider-input">
+                obj-scale: 
+                <input class="slider" type="range" min="1" max="720" value="360" id="obj-scale">
+            </div>
+        </div>
+
         <div class="main-container">
-            <canvas class="main-canvas" title="Canvas to show your image"></canvas>
+            <canvas class="main-canvas" id="gl-canvas" title="Canvas to show your image"></canvas>
             
             <div class="draw-input-container">
-                <select class="select">
+                <select id="hollow" class="select">
                     <option class="disabled-option" disabled selected>Select item to draw</option>
-                    <option value="Item-1">Item 1</option>
-                    <option value="Item-2">Item 2</option>
-                    <option value="Item-3">Item 3</option>
+                    <option value="limas">Pyramid</option>
+                    <option value="kubus">Cube</option>
+                    <option value="limaskubus">Hexagon</option>
                 </select>
                 <button id="shading-button" class="util-button" onclick="turnOnOffShading()">Shading OFF</button>
+                <button id="reset-button" class="util-button">Reset</button>
             </div>
 
             <div class="util-button-container">
                 <button style="margin-right: 2.5px;" class="util-button save-load">Save</button>
                 <button style="margin-left: 2.5px; margin-right: 5px;" class="util-button save-load">Load</button> <input type="file" id="load-file" onchange="" style="display: none;">
-                <button id="draw" class="util-button" onclick="draw()">Draw</button>
+                <select id="projection" class="select">
+                    <option class="disabled-option" disabled selected>Select projection</option>
+                    <option value="default">Default</option>
+                    <option value="ortographic">Ortographic</option>
+                    <option value="perspective">Perspective</option>
+                    <option value="oblique">Oblique</option>
+                </select>
                 <button id="help" class="util-button" onclick="help()">Help</button>
             </div>
+        </div>
+
+        <div class="slider-container">
+            
         </div>
 
         <footer class="web-footer">
@@ -62,5 +102,9 @@
                 </div>
             </div>
         </div>
+
+        <!--JS link-->
+        <script src="js/draw.js" defer></script>
+        <script src="js/help.js" defer></script>
     </body>
 </html>

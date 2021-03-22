@@ -115,6 +115,20 @@ class Camera
         ];
     }
 
+    calculateEye() {
+        let eye = [0, 0, 0];
+    
+        for (let i = 0; i < eye.length; i++) {
+            eye[i] += this.translation[i];
+        }
+
+        eye = matrixVectorMul(this.rotationY, eye);
+        eye = matrixVectorMul(this.rotationX, eye);
+        eye = matrixVectorMul(this.rotationZ, eye);
+        
+        return eye;
+    }
+
     ortographic() {
         var left = -2;
         var right = 2;

@@ -1,4 +1,4 @@
-function main() {
+function run(vertText, fragText) {
     var canvas = document.getElementById('gl-canvas');
 
     canvas.width = 800;
@@ -12,29 +12,11 @@ function main() {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    var vert = `precision mediump float;
-
-    attribute vec3 vertPos;
-    uniform mat4 objMat;
-    uniform mat4 modelViewMat;
-    uniform mat4 projMat;
-    
-    void main() {
-        vec4 tempPos = vec4(vertPos, 1.0);
-        gl_Position = projMat * modelViewMat * objMat * tempPos;
-    }`;
-
-    var frag = `precision mediump float;
-
-    void main() {
-        gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
-    }`;
-
     var vertexShader = gl.createShader(gl.VERTEX_SHADER);
     var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 
-    gl.shaderSource(vertexShader, vert);
-    gl.shaderSource(fragmentShader, frag);
+    gl.shaderSource(vertexShader, vertText);
+    gl.shaderSource(fragmentShader, fragText);
 
     gl.compileShader(vertexShader);
     if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
@@ -79,7 +61,7 @@ function main() {
     gl.useProgram(program);
 
     var positionBuf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuf);
+    var normalBuf = gl.createBuffer();
     // ===================================================
 
     // ============= Load File ===========================
@@ -96,7 +78,6 @@ function main() {
         currentObject = new Hollow(data.vertices);
         currentObject.loadMatrices(data.matrices);
         // TODO : Load Color
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(currentObject.vertices), gl.STATIC_DRAW);
         render();
         document.getElementById('hollow').value = '';
     };
@@ -107,13 +88,14 @@ function main() {
     selectObject.addEventListener('change', function() {
         document.getElementById("load-button").value = '';
         if (selectObject.value=="limas") {
-            currentObject = new Hollow(hollowLimas);
+            currentObject = new Hollow(hollowLimas, null);
         } else if (selectObject.value=="kubus") {
-            currentObject = new Hollow(hollowCubic);
+            currentObject = new Hollow(hollowCubic, null);
+        } else if (selectObject.value=="limaskubus") {
+            currentObject = new Hollow(hexagon, null);
         } else {
-            currentObject = new Hollow(hexagon);
+            currentObject = new Hollow(cube, cubeNormals);
         }
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(currentObject.vertices), gl.STATIC_DRAW);
         render();
     });
 
@@ -123,13 +105,14 @@ function main() {
         camera.updateDefault();
         projectionMatrix = projMat;
         render();
-    })
-    // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube), gl.STATIC_DRAW);
+    });
 
     var positionLoc = gl.getAttribLocation(program, 'vertPos');
+    var normalLoc = gl.getAttribLocation(program, 'normal');
     var objMatLoc = gl.getUniformLocation(program, 'objMat');
     var modViewLoc = gl.getUniformLocation(program, 'modelViewMat');
     var projLoc = gl.getUniformLocation(program, 'projMat');
+    var viewPosLoc = gl.getUniformLocation(program, 'viewPos');
     // ===================================================
 
     // ================ EVENT HANDLER ====================
@@ -264,7 +247,8 @@ function main() {
 
             // gl.enable(gl.DEPTH_TEST);
 
-
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuf);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(currentObject.vertices), gl.STATIC_DRAW);
             gl.vertexAttribPointer(
                 positionLoc,
                 3,
@@ -274,6 +258,18 @@ function main() {
                 0
             );
             gl.enableVertexAttribArray(positionLoc);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, normalBuf);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(currentObject.normals), gl.STATIC_DRAW);
+            gl.vertexAttribPointer(
+                normalLoc,
+                3,
+                gl.FLOAT,
+                gl.FALSE,
+                3 * Float32Array.BYTES_PER_ELEMENT,
+                0
+            );
+            gl.enableVertexAttribArray(normalLoc);
         
             const objMat = currentObject.calculateObjectMat();
             const modelView = camera.calculateModelView();
@@ -281,10 +277,30 @@ function main() {
             gl.uniformMatrix4fv(objMatLoc, false, new Float32Array(objMat));
             gl.uniformMatrix4fv(modViewLoc, false, new Float32Array(modelView));
             gl.uniformMatrix4fv(projLoc, false, new Float32Array(projectionMatrix));
-        
+            gl.uniform3fv(viewPosLoc, new Float32Array(camera.calculateEye()));
+
             gl.drawArrays(gl.TRIANGLES, 0, currentObject.nVertices);
             // console.log(projectionMatrix);
         }
     }
 }
+
+function main() {
+    textLoader('../shaders/vertex.glsl', function(...args) {
+        if (args[0]) { // Error
+            console.error(args[0]);
+        } else {
+            var vertText = args[1];
+            textLoader('../shaders/fragment.glsl', function(...args) {
+                if (args[0]) {
+                    console.error(args[0]);
+                } else {
+                    var fragText = args[1];
+                    run(vertText, fragText);
+                }
+            });
+        }
+    });
+}
+
 main();

@@ -1,7 +1,8 @@
 class Hollow
 {
-    constructor(vertices) {
+    constructor(vertices, normals) {
         this.vertices = vertices;
+        this.normals = normals;
         this.nVertices = this.vertices.length/3;
 
         this.scale = [

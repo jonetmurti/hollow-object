@@ -18,10 +18,24 @@ function turnOnOffShading() {
 /**
  * Draw selected item
  */
-function draw() {
+function main() {
     var itemSelect = document.getElementsByClassName('select')[0];
     var shadingBtn = document.getElementById('shading-button');
-    
+
+    var canvas = document.getElementById('gl-canvas');
+    var gl = canvas.getContext('webgl');
+    if (!gl) {
+        return;
+    }
+
+    const r = 162 / 255;
+    const g = 210 / 255;
+    const b = 255 / 255;
+    gl.clearColor(r, g, b, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
     var item = itemSelect.value;
     // TODO : draw item here
 }
+
+main();
