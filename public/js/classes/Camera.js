@@ -1,6 +1,14 @@
 import {
     degToRad
 } from '../libs/matrix.js';
+import {
+    matrixVectorMul,
+    normalize,
+    subtract,
+    cross,
+    dot,
+    negate
+} from '../libs/vector.js';
 
 export default class Camera {
     constructor(canvasWidth, canvasHeight) {
@@ -53,7 +61,6 @@ export default class Camera {
         document.getElementById('cam-trans').value=225;
         document.getElementById('cam-rotate-x').value=0;
         document.getElementById('cam-rotate-y').value=0;
-        document.getElementById('projection').value="default";
     }
     updateRotationX(deg) {
         const rad = degToRad(deg);
@@ -151,8 +158,8 @@ export default class Camera {
 
     perspective() {
         const fovY = 90;
-        const far = 5;
-        const near = 1;
+        const far = 100;
+        const near = 0.1;
         const aspect = 1;
 
         const cotan = Math.tan(degToRad(90) - degToRad(fovY)/2);

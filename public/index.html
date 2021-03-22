@@ -15,9 +15,10 @@
         <script src="js/pages/slider.js" defer></script>
         <script src="js/pages/help.js" defer></script>
         <script type="module" src="js/pages/saveload.js" defer></script>
+        <script type="module" src="js/main.js" defer></script>
     </head>
 
-    <body>
+    <body onload="run()">
         <!--MAIN PART-->
         <button id="sidenav-open-button" class="util-button" onclick="openSideNav()">Menu</button>
 
@@ -47,8 +48,7 @@
             <div class="sidenav-section">
                 <select id="projection">
                     <option class="disabled-option" disabled selected>Select projection</option>
-                    <option value="default">Default</option>
-                    <option value="ortographic">Ortographic</option>
+                    <option value="ortographic">Orthographic</option>
                     <option value="perspective">Perspective</option>
                     <option value="oblique">Oblique</option>
                 </select>
@@ -105,10 +105,31 @@
                     </td>
                     <td class="slider-val">360</td>
                 </tr>
+                <tr class="slider-input-container">
+                    <td class="slider-label">Cam-trans:</td>
+                    <td class="slider-col">
+                        <input class="slider" type="range" min="0" max="450" value="225" id="cam-trans" onchange="changeValSlider(7)">
+                    </td>
+                    <td class="slider-val">225</td>
+                </tr>
+                <tr class="slider-input-container">
+                    <td class="slider-label">Cam-x-rotate:</td>
+                    <td class="slider-col">
+                        <input class="slider" type="range" min="-360" max="360" value="0" id="cam-rotate-x" onchange="changeValSlider(8)">
+                    </td>
+                    <td class="slider-val">0</td>
+                </tr>
+                <tr class="slider-input-container">
+                    <td class="slider-label">Cam-y-rotate:</td>
+                    <td class="slider-col">
+                        <input class="slider" type="range" min="-360" max="360" value="0" id="cam-rotate-y" onchange="changeValSlider(9)">
+                    </td>
+                    <td class="slider-val">0</td>
+                </tr>
             </table>
 
             <div class="sidenav-section">
-                <button class="sidenav-button single-button">Reset</button>
+                <button id="reset" class="sidenav-button single-button">Reset</button>
             </div>
 
             <div class="sidenav-section">

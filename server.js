@@ -15,3 +15,12 @@ app.get('/file', (req, res) => {
         }
     );
 });
+
+app.get('/vertex-shader', (req, res) => {
+    file.readFile('./shaders/vertex.glsl', 'utf8', 
+        function(err, data) {
+            if (err) console.log(err);
+            res.send(data);
+        }
+    );
+});
