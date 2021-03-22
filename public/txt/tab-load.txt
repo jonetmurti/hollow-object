@@ -1,1 +1,2 @@
-TODO : Fill this file
+1. Untuk memilih jenis projection maka klik "Choose Projection", Pilihan Default akan memberikan Projection awal objek, jika ingin memilih proyeksi untuk Ortographic, Perspective, dan Oblique dapat dengan memilih pada choose projection yang bersankutan
+2. Jika ingin mengaktifkan dan menonaktifkan shading dapat dengan memilih Shading On atau Shading Off
