@@ -303,4 +303,50 @@ function main() {
     });
 }
 
-main();
+// Version 1
+// main();
+
+// Version 2
+var vert = `precision mediump float;
+
+attribute vec3 vertPos;
+attribute vec3 normal;
+varying vec3 vNormal;
+varying vec3 fragPos;
+uniform mat4 objMat;
+uniform mat4 modelViewMat;
+uniform mat4 projMat;
+
+void main() {
+    vNormal = (objMat * vec4(normal, 0.0)).xyz;
+    fragPos = (objMat * vec4(vertPos, 1.0)).xyz;
+    gl_Position = projMat * modelViewMat * objMat * vec4(vertPos, 1.0);
+}`;
+var frag = `precision mediump float;
+
+varying vec3 vNormal;
+varying vec3 fragPos;
+uniform vec3 viewPos;
+
+void main() {
+    vec3 normalizedNormal = normalize(vec3(vNormal.xy, -1.0*vNormal.z));
+    vec3 lightColor = vec3(1.0, 1.0, 1.0);
+    vec3 lightPos = vec3(-1, 1, 1);
+    vec3 lightDirection = normalize(lightPos - fragPos);
+
+    vec3 ambient = 0.5 * lightColor;
+
+    vec3 diffuse = 0.5 * max(dot(normalizedNormal, lightDirection), 0.0) * lightColor;
+
+    vec3 reflected = reflect(-lightDirection, normalizedNormal);
+    vec3 normalizedViewDir = normalize(viewPos - fragPos);
+    float spec = pow(max(dot(reflected, normalizedViewDir), 0.0), 32.0);
+    vec3 specular = 0.5 * spec * lightColor;
+
+    vec3 totalIntensity = ambient + diffuse + specular;
+
+    vec3 defaultColor = vec3(1.0, 0.0, 0.0);
+
+    gl_FragColor = vec4(totalIntensity * defaultColor, 1.0);
+}`;
+run(vert, frag);
