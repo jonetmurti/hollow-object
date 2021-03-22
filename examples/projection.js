@@ -1,8 +1,8 @@
 function run(vertText, fragText) {
     var canvas = document.getElementById('gl-canvas');
 
-    canvas.width = 800;
-    canvas.height = 800;
+    canvas.width = 600;
+    canvas.height = 600;
 
     var gl = canvas.getContext('webgl');
     if (!gl) {
@@ -88,7 +88,7 @@ function run(vertText, fragText) {
     selectObject.addEventListener('change', function() {
         document.getElementById("load-button").value = '';
         if (selectObject.value=="limas") {
-            currentObject = new Hollow(hollowLimas, null);
+            currentObject = new Hollow(hollowLimas, limasNormals);
         } else if (selectObject.value=="kubus") {
             currentObject = new Hollow(hollowCubic, null);
         } else if (selectObject.value=="limaskubus") {
