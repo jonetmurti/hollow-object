@@ -1,1 +1,5 @@
-TODO : Fill this file
+
+1. Untuk memilih hollow objek yang diinginkan klik pada "Choose Hollow Object" dan pilih Limas/Kubus/Segienam
+2. Untuk mengatur Translasi objek maka gunakan "obj-x-trans" untuk translasi objek pada sumbu x, "obj-y-trans" untuk translasi objek pada sumbu y, "obj-z-trans" untuk translasi objek pada sumbu z
+3. Untuk mengatur Rotasi objek maka gunakan "obj-x-rotate" untuk rotasi objek pada sumbu x, "obj-y-rotate" untuk rotasi objek pada sumbu y, "obj-z-trans" untuk translasi objek pada sumbu z
+4. Untuk melakukan Scaling objek maka gunakan "obj-scale" untuk memperbesar atau mengecilkan objek
