@@ -165,6 +165,7 @@ window.run = function run() {
             var data = JSON.parse(fileReader.result);
             window.currentObject = new Hollow(data.index, data.vertices, data.normal);
             window.currentObject.loadMatrices(data.matrices);
+            document.getElementById('hollow').selectedIndex = data.index;
             // TODO : Load Color
             render();
             document.getElementById('hollow').value = '';
