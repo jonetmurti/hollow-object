@@ -1,0 +1,1 @@
+Untuk memilih jenis projection maka klik "Choose Projection", Pilihan Default akan memberikan Projection awal objek, jika ingin memilih proyeksi untuk Ortographic, Perspective, atau Oblique dapat dengan memilih pada choose projection yang bersangkutan

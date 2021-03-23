@@ -1,0 +1,1 @@
+Jika ingin mengaktifkan dan menonaktifkan shading dapat dengan memilih Shading On atau Shading Off

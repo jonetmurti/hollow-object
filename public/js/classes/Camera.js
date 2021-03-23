@@ -1,5 +1,5 @@
 import {
-    degToRad
+    degToRad, multiply
 } from '../libs/matrix.js';
 import {
     matrixVectorMul,
@@ -98,7 +98,7 @@ export default class Camera {
         this.rotationZ[4] = cos;
     }
 
-    calculateModelView() {
+    calculateModelView(isOblique) {
         let eye = [0, 0, 0];
         let at = [0, 0, 0];
         let up = [0, 1, 0];
@@ -116,13 +116,51 @@ export default class Camera {
         let yaxis = cross(xaxis, zaxis);
 
         negate(xaxis);
+    
+        let modelViewMat = [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        ];
 
-        return [
+        if (isOblique) {
+            var theta = degToRad(70);
+            var phi = degToRad(70);
+
+            var cotT = 1 / Math.tan(theta);
+            var cotP = 1 / Math.tan(phi);
+
+            modelViewMat = multiply(modelViewMat, [
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                -dot(xaxis, eye), -dot(yaxis, eye), -dot(zaxis, eye), 1
+            ]);
+
+            modelViewMat = multiply(modelViewMat, [
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                cotT, cotP, 1, 0,
+                0, 0, 0, 1
+            ]);
+
+            modelViewMat = multiply(modelViewMat, [
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                dot(xaxis, eye), dot(yaxis, eye), dot(zaxis, eye), 1
+            ]);
+        }
+
+        modelViewMat = multiply(modelViewMat, [
             xaxis[0], yaxis[0], zaxis[0], 0, 
             xaxis[1], yaxis[1], zaxis[1], 0,
             xaxis[2], yaxis[2], zaxis[2], 0,
             -dot(xaxis, eye), -dot(yaxis, eye), -dot(zaxis, eye), 1
-        ];
+        ]);
+
+        return modelViewMat;
     }
 
     calculateEye() {
@@ -150,7 +188,7 @@ export default class Camera {
         var matrix = [
             2/(right - left), 0, 0, 0,
             0, 2/(top - bot), 0, 0,
-            0, 0, -2/(far - near), 0,
+            0, 0, 2/(far - near), 0,
             -1*(left + right)/(right - left), -1*(top + bot)/(top - bot), -1*(far + near )/(far - near), 1
         ];
         return matrix;
@@ -174,17 +212,6 @@ export default class Camera {
     }
 
     oblique() {
-        var theta = degToRad(15);
-        var phi = degToRad(60);
-
-        var cotT = -1 / Math.tan(theta);
-        var cotP = -1 / Math.tan(phi);
-
-        return [
-            1, 0, cotT, 0,
-            0, 1, cotP, 0,
-            0, 0,  1  , 0,
-            0, 0,  0  , 1
-        ];
+        return this.ortographic();
     }
 }

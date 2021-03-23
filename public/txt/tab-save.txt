@@ -1,3 +1,0 @@
-1. Untuk melakukan reset ke default pada pilihan Hollow Object bersangkutan, maka bisa dilakukan dengan mengklik "Reset Default". "Reset Default akan mereset semua transformasi yang sudah dilakukan terhadap objek dan kamera dan mengembalikannya kepada posisi semula.
-2. Untuk menyimpan objek yang sudah ditransformasi beserta view cameranya maka bisa dilakukan dengan menekan tombol "Save" dan akan mengeksport matriksnya kedalam bentuk file json
-3. Untuk meload file maka bisa dilakukan dengan mengklik "Choose File" untuk memilih file json yang akan diimpor ke dalam canvas

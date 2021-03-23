@@ -2,52 +2,71 @@ import Camera from './classes/Camera.js';
 import Hollow from './classes/Hollow.js';
 import { hollowCubic, normalHollowCubic } from './objects/hollow-cube.js';
 import { hollowLimas, limasNormals } from './objects/hollow-pyramid.js';
+import { hollowPrism, prismNormal } from './objects/hollow-prism.js';
 import { cube, cubeNormals } from './objects/cube.js';
 
+// Shading shaders
+var shadingVertText = `precision mediump float;
+
+attribute vec3 vertPos;
+attribute vec3 normal;
+varying vec3 vNormal;
+varying vec3 fragPos;
+uniform mat4 objMat;
+uniform mat4 modelViewMat;
+uniform mat4 projMat;
+
+void main() {
+    vNormal = (objMat * vec4(normal, 0.0)).xyz;
+    fragPos = (objMat * vec4(vertPos, 1.0)).xyz;
+    gl_Position = projMat * modelViewMat * objMat * vec4(vertPos, 1.0);
+}`;
+var shadingFragText = `precision mediump float;
+
+varying vec3 vNormal;
+varying vec3 fragPos;
+uniform vec3 viewPos;
+
+void main() {
+    vec3 normalizedNormal = normalize(vec3(vNormal.xy, -1.0*vNormal.z));
+    vec3 lightColor = vec3(1.0, 1.0, 1.0);
+    vec3 lightPos = vec3(-1, 1, 1);
+    vec3 lightDirection = normalize(lightPos - fragPos);
+
+    vec3 ambient = 0.5 * lightColor;
+
+    vec3 diffuse = 0.5 * max(dot(normalizedNormal, lightDirection), 0.0) * lightColor;
+
+    vec3 reflected = reflect(-lightDirection, normalizedNormal);
+    vec3 normalizedViewDir = normalize(viewPos - fragPos);
+    float spec = pow(max(dot(reflected, normalizedViewDir), 0.0), 32.0);
+    vec3 specular = 0.5 * spec * lightColor;
+
+    vec3 totalIntensity = ambient + diffuse + specular;
+
+    vec3 defaultColor = vec3(1.0, 0.0, 0.0);
+
+    gl_FragColor = vec4(totalIntensity * defaultColor, 1.0);
+}`;
+
+// Normal Shaders
+var vertText = `precision mediump float;
+
+attribute vec3 vertPos;
+uniform mat4 objMat;
+uniform mat4 modelViewMat;
+uniform mat4 projMat;
+
+void main() {
+    gl_Position = projMat * modelViewMat * objMat * vec4(vertPos, 1.0);
+}`;
+var fragText = `precision mediump float;
+
+void main() {
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}`;
+
 window.run = function run() {
-    var vertText = `precision mediump float;
-
-    attribute vec3 vertPos;
-    attribute vec3 normal;
-    varying vec3 vNormal;
-    varying vec3 fragPos;
-    uniform mat4 objMat;
-    uniform mat4 modelViewMat;
-    uniform mat4 projMat;
-
-    void main() {
-        vNormal = (objMat * vec4(normal, 0.0)).xyz;
-        fragPos = (objMat * vec4(vertPos, 1.0)).xyz;
-        gl_Position = projMat * modelViewMat * objMat * vec4(vertPos, 1.0);
-    }`;
-    var fragText = `precision mediump float;
-
-    varying vec3 vNormal;
-    varying vec3 fragPos;
-    uniform vec3 viewPos;
-
-    void main() {
-        vec3 normalizedNormal = normalize(vec3(vNormal.xy, -1.0*vNormal.z));
-        vec3 lightColor = vec3(1.0, 1.0, 1.0);
-        vec3 lightPos = vec3(-1, 1, 1);
-        vec3 lightDirection = normalize(lightPos - fragPos);
-
-        vec3 ambient = 0.5 * lightColor;
-
-        vec3 diffuse = 0.5 * max(dot(normalizedNormal, lightDirection), 0.0) * lightColor;
-
-        vec3 reflected = reflect(-lightDirection, normalizedNormal);
-        vec3 normalizedViewDir = normalize(viewPos - fragPos);
-        float spec = pow(max(dot(reflected, normalizedViewDir), 0.0), 32.0);
-        vec3 specular = 0.5 * spec * lightColor;
-
-        vec3 totalIntensity = ambient + diffuse + specular;
-
-        vec3 defaultColor = vec3(1.0, 0.0, 0.0);
-
-        // gl_FragColor = vec4(totalIntensity * defaultColor, 1.0);
-        gl_FragColor = vec4(defaultColor, 1.0);
-    }`;
 
     var canvas = document.getElementById('gl-canvas');
 
@@ -62,6 +81,7 @@ window.run = function run() {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+    // Normal shaders
     var vertexShader = gl.createShader(gl.VERTEX_SHADER);
     var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 
@@ -88,16 +108,46 @@ window.run = function run() {
         console.log("failed to link program : ", gl.getProgramInfoLog(program));
         return;
     }
+
+    // Shading program
+    var shadingVertShader = gl.createShader(gl.VERTEX_SHADER);
+    var shadingFragShader = gl.createShader(gl.FRAGMENT_SHADER);
+
+    gl.shaderSource(shadingVertShader, shadingVertText);
+    gl.shaderSource(shadingFragShader, shadingFragText);
+
+    gl.compileShader(shadingVertShader);
+    if (!gl.getShaderParameter(shadingVertShader, gl.COMPILE_STATUS)) {
+        console.log("failed to compile shading vertex shader, ", gl.getShaderInfoLog(shadingVertShader));
+        return;
+    }
+
+    gl.compileShader(shadingFragShader);
+    if (!gl.getShaderParameter(shadingFragShader, gl.COMPILE_STATUS)) {
+        console.log("failed to compile shading fragment shader, ", gl.getShaderInfoLog(shadingFragShader));
+        return;
+    }
+
+    var shadingProgram = gl.createProgram();
+    gl.attachShader(shadingProgram, shadingVertShader);
+    gl.attachShader(shadingProgram, shadingFragShader);
+    gl.linkProgram(shadingProgram);
+    if (!gl.getProgramParameter(shadingProgram, gl.LINK_STATUS)) {
+        console.log("failed to link shading program : ", gl.getProgramInfoLog(shadingProgram));
+        return;
+    }
     
     // ===================================================
 
     // ================= OBJECT & CAMERA =====================
     var camera = new Camera(gl.canvas.width, gl.canvas.height);
-    var currentObject = null;
+    window.currentObject = null;
     var projectionMatrix = camera.perspective;
     // =======================================================
 
     // =============== BUFFERS ===========================
+    var shadingOn = false;
+    var isOblique = false;
     gl.useProgram(program);
 
     var positionBuf = gl.createBuffer();
@@ -107,17 +157,15 @@ window.run = function run() {
     // ============= Load File ===========================
     var fileReader =  new FileReader()
 
-    // document.getElementById("load-button").addEventListener("change", function(){
-    //     if (this.files[0]){
-    //         fileReader.readAsText(this.files[0]);
-    //     }
-    // });
-    
+    document.getElementById("load-button").addEventListener("change", function(){
+        if (this.files[0]){
+            fileReader.readAsText(this.files[0]);
+        }
+    });
     fileReader.onload = function(){
         data = JSON.parse(fileReader.result);
-        currentObject = new Hollow(data.vertices);
-        currentObject.loadMatrices(data.matrices);
-        // TODO : Load Color
+        window.currentObject = new Hollow(data.vertices);
+        window.currentObject.loadMatrices(data.matrices);
         render();
         document.getElementById('hollow').value = '';
     };
@@ -127,101 +175,132 @@ window.run = function run() {
     var selectObject = document.getElementById('hollow');
     selectObject.addEventListener('change', function() {
         if (selectObject.value=="limas") {
-            currentObject = new Hollow(hollowLimas, limasNormals);
+            window.currentObject = new Hollow(1, hollowLimas, limasNormals);
         } else if (selectObject.value=="kubus") {
-            currentObject = new Hollow(hollowCubic, normalHollowCubic);
-        } else if (selectObject.value=="hexagon") {
-            currentObject = new Hollow(hexagon, null);
+            window.currentObject = new Hollow(2, hollowCubic, normalHollowCubic);
+        } else if (selectObject.value=="prisma") {
+            window.currentObject = new Hollow(3, hollowPrism, prismNormal);
         } else {
-            currentObject = new Hollow(cube, cubeNormals);
+            window.currentObject = new Hollow(0, cube, cubeNormals);
         }
         render();
     });
 
     let reset = document.getElementById("reset");
     reset.addEventListener("click", function () {
-        currentObject.reset();
-        camera.updateDefault();
-        projectionMatrix = camera.perspective();
-        document.getElementById('projection').value="perspective";
-        render();
+        if (window.currentObject) {
+            window.currentObject.reset();
+            camera.updateDefault();
+            projectionMatrix = camera.perspective();
+            isOblique = false;
+            document.getElementById('projection').value="perspective";
+            render();
+        }
     });
 
     var positionLoc = gl.getAttribLocation(program, 'vertPos');
-    var normalLoc = gl.getAttribLocation(program, 'normal');
+    var normalLoc = null;
     var objMatLoc = gl.getUniformLocation(program, 'objMat');
     var modViewLoc = gl.getUniformLocation(program, 'modelViewMat');
     var projLoc = gl.getUniformLocation(program, 'projMat');
-    var viewPosLoc = gl.getUniformLocation(program, 'viewPos');
+    var viewPosLoc = null;
     // ===================================================
 
     // ================ EVENT HANDLER ====================
     // Save file
     // document.getElementById("save-button").addEventListener("click", function() {
-    //     if (currentObject) {
-    //         save(currentObject);
+    //     if (window.currentObject) {
+    //         save(window.currentObject);
     //     }
     // });
 
+    let shadingOnRadio = document.getElementById('shading-on');
+    shadingOnRadio.addEventListener('change', function() {
+        if (shadingOnRadio.checked) {
+            gl.useProgram(shadingProgram);
+            positionLoc = gl.getAttribLocation(shadingProgram, 'vertPos');
+            normalLoc = gl.getAttribLocation(shadingProgram, 'normal');
+            objMatLoc = gl.getUniformLocation(shadingProgram, 'objMat');
+            modViewLoc = gl.getUniformLocation(shadingProgram, 'modelViewMat');
+            projLoc = gl.getUniformLocation(shadingProgram, 'projMat');
+            viewPosLoc = gl.getUniformLocation(shadingProgram, 'viewPos');
+            shadingOn = true;
+            render();
+        } 
+    });
+
+    let shadingOffRadio = document.getElementById('shading-off');
+    shadingOffRadio.addEventListener('change', function() {
+        if (shadingOffRadio.checked) {
+            gl.useProgram(program);
+            positionLoc = gl.getAttribLocation(program, 'vertPos');
+            objMatLoc = gl.getUniformLocation(program, 'objMat');
+            modViewLoc = gl.getUniformLocation(program, 'modelViewMat');
+            projLoc = gl.getUniformLocation(program, 'projMat');
+            shadingOn = false;
+            render();
+        } 
+    });
+
     let xSlider = document.getElementById('x-trans');
     xSlider.addEventListener('input', function() {
-        if (currentObject) {
-            currentObject.updateTranslationX(xSlider.value * 2 / gl.canvas.width - 1);
+        if (window.currentObject) {
+            window.currentObject.updateTranslationX(xSlider.value * 2 / gl.canvas.width - 1);
             render();
         }
     });
 
     let ySlider = document.getElementById('y-trans');
     ySlider.addEventListener('input', function() {
-        if (currentObject) {
-            currentObject.updateTranslationY(ySlider.value * 2 / gl.canvas.height - 1);
+        if (window.currentObject) {
+            window.currentObject.updateTranslationY(ySlider.value * 2 / gl.canvas.height - 1);
             render();
         }
     });
 
     let zSlider = document.getElementById('z-trans');
     zSlider.addEventListener('input', function() {
-        if (currentObject) {
-            currentObject.updateTranslationZ(zSlider.value * -2 / 800 + 1);
+        if (window.currentObject) {
+            window.currentObject.updateTranslationZ(zSlider.value * -2 / 800 + 1);
             render();
         }
     });
 
     let rotSlider = document.getElementById('y-rotate');
     rotSlider.addEventListener('input', function() {
-        if (currentObject) {
-            currentObject.updateRotationY(rotSlider.value);
+        if (window.currentObject) {
+            window.currentObject.updateRotationY(rotSlider.value);
             render();
         }
     });
 
     let rotSlider_x = document.getElementById('x-rotate');
     rotSlider_x.addEventListener('input', function() {
-        if (currentObject) {
-            currentObject.updateRotationX(rotSlider_x.value);
+        if (window.currentObject) {
+            window.currentObject.updateRotationX(rotSlider_x.value);
             render();
         }
     });
 
     let rotSlider_z = document.getElementById('z-rotate');
     rotSlider_z.addEventListener('input', function() {
-        if (currentObject) {
-            currentObject.updateRotationZ(rotSlider_z.value);
+        if (window.currentObject) {
+            window.currentObject.updateRotationZ(rotSlider_z.value);
             render();
         }
     });
 
     let scaleSlider = document.getElementById('obj-scale');
     scaleSlider.addEventListener('input', function() {
-        if (currentObject) {
-            currentObject.updateScale(scaleSlider.value/360);
+        if (window.currentObject) {
+            window.currentObject.updateScale(scaleSlider.value/360);
             render();
         }
     });
 
     let camTranSlider = document.getElementById('cam-trans');
     camTranSlider.addEventListener('input', function() {
-        if (currentObject) {
+        if (window.currentObject) {
             camera.updateTranslationZ(camTranSlider.value * 10 / 800 - 5);
             render();
         }
@@ -229,14 +308,14 @@ window.run = function run() {
 
     let camRotSliderY = document.getElementById('cam-rotate-y');
     camRotSliderY.addEventListener('input', function() {
-        if (currentObject) {
+        if (window.currentObject) {
             camera.updateRotationY(camRotSliderY.value);
             render();
         }
     });
     let camRotSliderX = document.getElementById('cam-rotate-x');
     camRotSliderX.addEventListener('input', function() {
-        if (currentObject) {
+        if (window.currentObject) {
             camera.updateRotationX(camRotSliderX.value);
             render();
         }
@@ -246,37 +325,37 @@ window.run = function run() {
     projection.addEventListener('change', function() {
         if (projection.value=="ortographic") {
             //Reset First
-            currentObject.reset();
-            camera.updateDefault();
             projectionMatrix = camera.ortographic();
-            camera.updateTranslationZ(450* 10 / 800 - 5);
-            document.getElementById('cam-trans').value=450;
+            isOblique = false;
         } else if (projection.value=="oblique") {
-            currentObject.reset();
-            camera.updateDefault();
+            isOblique = true;
             projectionMatrix = camera.oblique();
         } else if (projection.value=="perspective") {
-            currentObject.reset();
-            camera.updateDefault();
             projectionMatrix = camera.perspective();
+            isOblique = false;
         }
-        render();
+        if (window.currentObject) {
+            window.currentObject.reset();
+            camera.updateDefault();
+            render();  
+        } 
     });
 
     // turn on shading
     // ===================================================
     render();
 
-    function render() {
-        if (currentObject) {
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
+function render() {
+        if (window.currentObject) {
             gl.enable(gl.CULL_FACE);
 
-            // gl.enable(gl.DEPTH_TEST);
+            gl.enable(gl.DEPTH_TEST);
+            gl.depthFunc(gl.LESS);
+
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
             gl.bindBuffer(gl.ARRAY_BUFFER, positionBuf);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(currentObject.vertices), gl.STATIC_DRAW);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(window.currentObject.vertices), gl.STATIC_DRAW);
             gl.vertexAttribPointer(
                 positionLoc,
                 3,
@@ -287,27 +366,31 @@ window.run = function run() {
             );
             gl.enableVertexAttribArray(positionLoc);
 
-            gl.bindBuffer(gl.ARRAY_BUFFER, normalBuf);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(currentObject.normals), gl.STATIC_DRAW);
-            gl.vertexAttribPointer(
-                normalLoc,
-                3,
-                gl.FLOAT,
-                gl.FALSE,
-                3 * Float32Array.BYTES_PER_ELEMENT,
-                0
-            );
-            gl.enableVertexAttribArray(normalLoc);
+            if (shadingOn) {
+                gl.bindBuffer(gl.ARRAY_BUFFER, normalBuf);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(window.currentObject.normals), gl.STATIC_DRAW);
+                gl.vertexAttribPointer(
+                    normalLoc,
+                    3,
+                    gl.FLOAT,
+                    gl.FALSE,
+                    3 * Float32Array.BYTES_PER_ELEMENT,
+                    0
+                );
+                gl.enableVertexAttribArray(normalLoc);
+            }
         
-            const objMat = currentObject.calculateObjectMat();
-            const modelView = camera.calculateModelView();
+            const objMat = window.currentObject.calculateObjectMat();
+            const modelView = camera.calculateModelView(isOblique);
 
             gl.uniformMatrix4fv(objMatLoc, false, new Float32Array(objMat));
             gl.uniformMatrix4fv(modViewLoc, false, new Float32Array(modelView));
             gl.uniformMatrix4fv(projLoc, false, new Float32Array(projectionMatrix));
-            gl.uniform3fv(viewPosLoc, new Float32Array(camera.calculateEye()));
 
-            gl.drawArrays(gl.TRIANGLES, 0, currentObject.nVertices);
+            if (shadingOn)
+                gl.uniform3fv(viewPosLoc, new Float32Array(camera.calculateEye()));
+
+            gl.drawArrays(gl.TRIANGLES, 0, window.currentObject.nVertices);
         }
     }
 }

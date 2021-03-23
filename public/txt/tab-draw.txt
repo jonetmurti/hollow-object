@@ -1,3 +1,0 @@
-1. Untuk melakukan Translasi pada kamera, maka gunakan sidebar "cam-trans" untuk metranslasi kamera
-2. Untuk melakukan Rotasi pada camera pada sumbu x, gunakan "cam-x-rotate" kemudian besar rotasi dengan menggerakkan sidebar
-3. Untuk melakukan Rotasi pada camera pada sumbu y, gunakan "cam-y-rotate" kemudian besar rotasi dengan menggerakkan sidebar

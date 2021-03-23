@@ -32,16 +32,17 @@
                     <option class="disabled-option" disabled selected>Select item to draw</option>
                     <option value="limas">Pyramid</option>
                     <option value="kubus">Cube</option>
-                    <option value="hexagon">Hexagon</option>
+                    <option value="prisma">Prism</option>
+                    <option value="sample">Sample</option>
                 </select>
             </div>
 
             <div class="sidenav-section">
                 <div id="shading-button-ON">
-                    <input type="radio" name="shading" value="on"><label class="radio-label">Shading ON</label>
+                    <input id="shading-on" type="radio" name="shading" value="on"><label class="radio-label">Shading ON</label>
                 </div>
                 <div id="shading-button-OFF">
-                    <input type="radio" name="shading" value="off"><label class="radio-label">Shading OFF</label>
+                    <input id="shading-off" type="radio" name="shading" value="off" checked><label class="radio-label">Shading OFF</label>
                 </div>
             </div>
 
@@ -113,14 +114,14 @@
                     <td class="slider-val">225</td>
                 </tr>
                 <tr class="slider-input-container">
-                    <td class="slider-label">Cam-x-rotate:</td>
+                    <td class="slider-label">Cam-X-rotate:</td>
                     <td class="slider-col">
                         <input class="slider" type="range" min="-360" max="360" value="0" id="cam-rotate-x" onchange="changeValSlider(8)">
                     </td>
                     <td class="slider-val">0</td>
                 </tr>
                 <tr class="slider-input-container">
-                    <td class="slider-label">Cam-y-rotate:</td>
+                    <td class="slider-label">Cam-Y-rotate:</td>
                     <td class="slider-col">
                         <input class="slider" type="range" min="-360" max="360" value="0" id="cam-rotate-y" onchange="changeValSlider(9)">
                     </td>
@@ -156,10 +157,12 @@
                 <p class="modal-title">Help</p>
                 
                 <div class="tab">
-                    <button id="help-draw" class="tab-button" onclick="openHelpTab('draw')">Object</button>
-                    <button id="help-cnvs" class="tab-button" onclick="openHelpTab('cnvs')">Camera</button>
-                    <button id="help-save" class="tab-button" onclick="openHelpTab('save')">Projection, Shading</button>
-                    <button id="help-load" class="tab-button" onclick="openHelpTab('load')">Save, Load, Reset</button>
+                    <button id="help-obj" class="tab-button" onclick="openHelpTab('obj')">Object</button>
+                    <button id="help-fmr" class="tab-button" onclick="openHelpTab('cmr')">Camera</button>
+                    <button id="help-prj" class="tab-button" onclick="openHelpTab('prj')">Projection</button>
+                    <button id="help-prj" class="tab-button" onclick="openHelpTab('shd')">Shading</button>
+                    <button id="help-load" class="tab-button" onclick="openHelpTab('rst')">Reset</button>
+                    <button id="help-load" class="tab-button" onclick="openHelpTab('fle')">External File</button>
                 </div>
 
                 <textarea id="info-text" readonly></textarea>
