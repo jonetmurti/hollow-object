@@ -147,6 +147,7 @@ window.run = function run() {
 
     // =============== BUFFERS ===========================
     var shadingOn = false;
+    var isOblique = false;
     gl.useProgram(program);
 
     var positionBuf = gl.createBuffer();
@@ -193,6 +194,7 @@ window.run = function run() {
             window.currentObject.reset();
             camera.updateDefault();
             projectionMatrix = camera.perspective();
+            isOblique = false;
             document.getElementById('projection').value="perspective";
             render();
         }
@@ -325,19 +327,20 @@ window.run = function run() {
     projection.addEventListener('change', function() {
         if (projection.value=="ortographic") {
             //Reset First
-            window.currentObject.reset();
-            camera.updateDefault();
             projectionMatrix = camera.ortographic();
+            isOblique = false;
         } else if (projection.value=="oblique") {
-            window.currentObject.reset();
-            camera.updateDefault();
+            isOblique = true;
             projectionMatrix = camera.oblique();
         } else if (projection.value=="perspective") {
+            projectionMatrix = camera.perspective();
+            isOblique = false;
+        }
+        if (window.currentObject) {
             window.currentObject.reset();
             camera.updateDefault();
-            projectionMatrix = camera.perspective();
-        }
-        render();
+            render();  
+        } 
     });
 
     // turn on shading
@@ -379,7 +382,7 @@ function render() {
             }
         
             const objMat = window.currentObject.calculateObjectMat();
-            const modelView = camera.calculateModelView();
+            const modelView = camera.calculateModelView(isOblique);
 
             gl.uniformMatrix4fv(objMatLoc, false, new Float32Array(objMat));
             gl.uniformMatrix4fv(modViewLoc, false, new Float32Array(modelView));
