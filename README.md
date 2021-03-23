@@ -27,6 +27,3 @@ Hollow Objek adalah objek berbentuk 3D dengan rongga ditengah tiap permukaan sis
 3. Select an item to draw and turn on/off shading
 4. Click `Draw`
 5. Open `Help` to seek help if you don't understand something
-
-## Koordinat
-Koordinat titik untuk semua objek berongga yang kami buat, dapat diakses di sheet yang kami buat, yaitu : https://docs.google.com/spreadsheets/d/1W8E2wFCUccHIh8ny8Cb4zb1WtIlj4HERDvGptMwEK_Y/edit?usp=sharing 
