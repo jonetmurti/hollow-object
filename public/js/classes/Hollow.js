@@ -149,8 +149,8 @@ export default class Hollow {
             this.translation[0], this.translation[1], this.translation[2], 1
         ]);
         objMat = multiply(objMat, this.rotationZ);
-        objMat = multiply(objMat, this.rotationY);
         objMat = multiply(objMat, this.rotationX);
+        objMat = multiply(objMat, this.rotationY);
         objMat = multiply(objMat, this.scale);
     
         return objMat;

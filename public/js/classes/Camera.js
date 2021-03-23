@@ -150,7 +150,7 @@ export default class Camera {
         var matrix = [
             2/(right - left), 0, 0, 0,
             0, 2/(top - bot), 0, 0,
-            0, 0, -2/(far - near), 0,
+            0, 0, 2/(far - near), 0,
             -1*(left + right)/(right - left), -1*(top + bot)/(top - bot), -1*(far + near )/(far - near), 1
         ];
         return matrix;

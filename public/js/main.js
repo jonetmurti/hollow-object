@@ -4,49 +4,68 @@ import { hollowCubic, normalHollowCubic } from './objects/hollow-cube.js';
 import { hollowLimas, limasNormals } from './objects/hollow-pyramid.js';
 import { cube, cubeNormals } from './objects/cube.js';
 
+// Shading shaders
+var shadingVertText = `precision mediump float;
+
+attribute vec3 vertPos;
+attribute vec3 normal;
+varying vec3 vNormal;
+varying vec3 fragPos;
+uniform mat4 objMat;
+uniform mat4 modelViewMat;
+uniform mat4 projMat;
+
+void main() {
+    vNormal = (objMat * vec4(normal, 0.0)).xyz;
+    fragPos = (objMat * vec4(vertPos, 1.0)).xyz;
+    gl_Position = projMat * modelViewMat * objMat * vec4(vertPos, 1.0);
+}`;
+var shadingFragText = `precision mediump float;
+
+varying vec3 vNormal;
+varying vec3 fragPos;
+uniform vec3 viewPos;
+
+void main() {
+    vec3 normalizedNormal = normalize(vec3(vNormal.xy, -1.0*vNormal.z));
+    vec3 lightColor = vec3(1.0, 1.0, 1.0);
+    vec3 lightPos = vec3(-1, 1, 1);
+    vec3 lightDirection = normalize(lightPos - fragPos);
+
+    vec3 ambient = 0.5 * lightColor;
+
+    vec3 diffuse = 0.5 * max(dot(normalizedNormal, lightDirection), 0.0) * lightColor;
+
+    vec3 reflected = reflect(-lightDirection, normalizedNormal);
+    vec3 normalizedViewDir = normalize(viewPos - fragPos);
+    float spec = pow(max(dot(reflected, normalizedViewDir), 0.0), 32.0);
+    vec3 specular = 0.5 * spec * lightColor;
+
+    vec3 totalIntensity = ambient + diffuse + specular;
+
+    vec3 defaultColor = vec3(1.0, 0.0, 0.0);
+
+    gl_FragColor = vec4(totalIntensity * defaultColor, 1.0);
+}`;
+
+// Normal Shaders
+var vertText = `precision mediump float;
+
+attribute vec3 vertPos;
+uniform mat4 objMat;
+uniform mat4 modelViewMat;
+uniform mat4 projMat;
+
+void main() {
+    gl_Position = projMat * modelViewMat * objMat * vec4(vertPos, 1.0);
+}`;
+var fragText = `precision mediump float;
+
+void main() {
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}`;
+
 window.run = function run() {
-    var vertText = `precision mediump float;
-
-    attribute vec3 vertPos;
-    attribute vec3 normal;
-    varying vec3 vNormal;
-    varying vec3 fragPos;
-    uniform mat4 objMat;
-    uniform mat4 modelViewMat;
-    uniform mat4 projMat;
-
-    void main() {
-        vNormal = (objMat * vec4(normal, 0.0)).xyz;
-        fragPos = (objMat * vec4(vertPos, 1.0)).xyz;
-        gl_Position = projMat * modelViewMat * objMat * vec4(vertPos, 1.0);
-    }`;
-    var fragText = `precision mediump float;
-
-    varying vec3 vNormal;
-    varying vec3 fragPos;
-    uniform vec3 viewPos;
-
-    void main() {
-        vec3 normalizedNormal = normalize(vec3(vNormal.xy, -1.0*vNormal.z));
-        vec3 lightColor = vec3(1.0, 1.0, 1.0);
-        vec3 lightPos = vec3(-1, 1, 1);
-        vec3 lightDirection = normalize(lightPos - fragPos);
-
-        vec3 ambient = 0.5 * lightColor;
-
-        vec3 diffuse = 0.5 * max(dot(normalizedNormal, lightDirection), 0.0) * lightColor;
-
-        vec3 reflected = reflect(-lightDirection, normalizedNormal);
-        vec3 normalizedViewDir = normalize(viewPos - fragPos);
-        float spec = pow(max(dot(reflected, normalizedViewDir), 0.0), 32.0);
-        vec3 specular = 0.5 * spec * lightColor;
-
-        vec3 totalIntensity = ambient + diffuse + specular;
-
-        vec3 defaultColor = vec3(1.0, 0.0, 0.0);
-
-        gl_FragColor = vec4(totalIntensity * defaultColor, 1.0);
-    }`;
 
     var canvas = document.getElementById('gl-canvas');
 
@@ -61,6 +80,7 @@ window.run = function run() {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+    // Normal shaders
     var vertexShader = gl.createShader(gl.VERTEX_SHADER);
     var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 
@@ -85,6 +105,34 @@ window.run = function run() {
     gl.linkProgram(program);
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
         console.log("failed to link program : ", gl.getProgramInfoLog(program));
+        return;
+    }
+
+    // Shading program
+    var shadingVertShader = gl.createShader(gl.VERTEX_SHADER);
+    var shadingFragShader = gl.createShader(gl.FRAGMENT_SHADER);
+
+    gl.shaderSource(shadingVertShader, shadingVertText);
+    gl.shaderSource(shadingFragShader, shadingFragText);
+
+    gl.compileShader(shadingVertShader);
+    if (!gl.getShaderParameter(shadingVertShader, gl.COMPILE_STATUS)) {
+        console.log("failed to compile shading vertex shader, ", gl.getShaderInfoLog(shadingVertShader));
+        return;
+    }
+
+    gl.compileShader(shadingFragShader);
+    if (!gl.getShaderParameter(shadingFragShader, gl.COMPILE_STATUS)) {
+        console.log("failed to compile shading fragment shader, ", gl.getShaderInfoLog(shadingFragShader));
+        return;
+    }
+
+    var shadingProgram = gl.createProgram();
+    gl.attachShader(shadingProgram, shadingVertShader);
+    gl.attachShader(shadingProgram, shadingFragShader);
+    gl.linkProgram(shadingProgram);
+    if (!gl.getProgramParameter(shadingProgram, gl.LINK_STATUS)) {
+        console.log("failed to link shading program : ", gl.getProgramInfoLog(shadingProgram));
         return;
     }
     
@@ -139,11 +187,13 @@ window.run = function run() {
 
     let reset = document.getElementById("reset");
     reset.addEventListener("click", function () {
-        currentObject.reset();
-        camera.updateDefault();
-        projectionMatrix = camera.perspective();
-        document.getElementById('projection').value="perspective";
-        render();
+        if (currentObject) {
+            currentObject.reset();
+            camera.updateDefault();
+            projectionMatrix = camera.perspective();
+            document.getElementById('projection').value="perspective";
+            render();
+        }
     });
 
     var positionLoc = gl.getAttribLocation(program, 'vertPos');
@@ -161,6 +211,8 @@ window.run = function run() {
     //         save(currentObject);
     //     }
     // });
+
+    // TODO : get value from radio button
 
     let xSlider = document.getElementById('x-trans');
     xSlider.addEventListener('input', function() {
@@ -248,8 +300,6 @@ window.run = function run() {
             currentObject.reset();
             camera.updateDefault();
             projectionMatrix = camera.ortographic();
-            camera.updateTranslationZ(450* 10 / 800 - 5);
-            document.getElementById('cam-trans').value=450;
         } else if (projection.value=="oblique") {
             currentObject.reset();
             camera.updateDefault();
