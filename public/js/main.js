@@ -157,20 +157,19 @@ window.run = function run() {
     // ============= Load File ===========================
     var fileReader =  new FileReader()
 
-    // document.getElementById("load-button").addEventListener("change", function(){
-    //     if (this.files[0]){
-    //         fileReader.readAsText(this.files[0]);
-    //     }
-    // });
-    
-    fileReader.onload = function(){
-        data = JSON.parse(fileReader.result);
-        window.currentObject = new Hollow(data.vertices);
-        window.currentObject.loadMatrices(data.matrices);
-        // TODO : Load Color
-        render();
-        document.getElementById('hollow').value = '';
-    };
+    document.getElementById("load-file").addEventListener("change", function(){
+         if (this.files[0]){
+             fileReader.readAsText(this.files[0]);
+         }
+         fileReader.onload = function(){
+            var data = JSON.parse(fileReader.result);
+            window.currentObject = new Hollow(data.index, data.vertices, data.normal);
+            window.currentObject.loadMatrices(data.matrices);
+            // TODO : Load Color
+            render();
+            document.getElementById('hollow').value = '';
+        };
+     });
     // ===================================================
 
     // =============== CHOOSE OBJECT ===========================
