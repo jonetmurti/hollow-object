@@ -157,18 +157,20 @@ window.run = function run() {
     // ============= Load File ===========================
     var fileReader =  new FileReader()
 
-    document.getElementById("load-button").addEventListener("change", function(){
-        if (this.files[0]){
-            fileReader.readAsText(this.files[0]);
-        }
-    });
-    fileReader.onload = function(){
-        data = JSON.parse(fileReader.result);
-        window.currentObject = new Hollow(data.vertices);
-        window.currentObject.loadMatrices(data.matrices);
-        render();
-        document.getElementById('hollow').value = '';
-    };
+    document.getElementById("load-file").addEventListener("change", function(){
+         if (this.files[0]){
+             fileReader.readAsText(this.files[0]);
+         }
+         fileReader.onload = function(){
+            var data = JSON.parse(fileReader.result);
+            window.currentObject = new Hollow(data.index, data.vertices, data.normal);
+            window.currentObject.loadMatrices(data.matrices);
+            document.getElementById('hollow').selectedIndex = data.index;
+            // TODO : Load Color
+            render();
+            document.getElementById('hollow').value = '';
+        };
+     });
     // ===================================================
 
     // =============== CHOOSE OBJECT ===========================
@@ -180,6 +182,7 @@ window.run = function run() {
             window.currentObject = new Hollow(2, hollowCubic, normalHollowCubic);
         } else if (selectObject.value=="prisma") {
             window.currentObject = new Hollow(3, hollowPrism, prismNormal);
+            window.currentObject.updateTranslationY(0)
         } else {
             window.currentObject = new Hollow(0, cube, cubeNormals);
         }
@@ -204,15 +207,6 @@ window.run = function run() {
     var modViewLoc = gl.getUniformLocation(program, 'modelViewMat');
     var projLoc = gl.getUniformLocation(program, 'projMat');
     var viewPosLoc = null;
-    // ===================================================
-
-    // ================ EVENT HANDLER ====================
-    // Save file
-    // document.getElementById("save-button").addEventListener("click", function() {
-    //     if (window.currentObject) {
-    //         save(window.currentObject);
-    //     }
-    // });
 
     let shadingOnRadio = document.getElementById('shading-on');
     shadingOnRadio.addEventListener('change', function() {
