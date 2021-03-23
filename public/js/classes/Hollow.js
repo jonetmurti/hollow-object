@@ -4,7 +4,8 @@ import {
 } from '../libs/matrix.js';
 
 export default class Hollow {
-    constructor(vertices, normals) {
+    constructor(index, vertices, normals) {
+        this.index = index;
         this.vertices = vertices;
         this.normals = normals;
         this.nVertices = this.vertices.length/3;

@@ -1,7 +1,7 @@
 import Hollow from '../classes/Hollow.js';
 
 window.save = function save() {
-    let object; // TODO : set object value from a global hollow object
+    let object = window.currentObject; // TODO : set object value from a global hollow object
     
     let data = {
         index: object.index,
@@ -16,11 +16,7 @@ window.save = function save() {
         }
     };
     var jsonObj = JSON.stringify(data, null, 4);
-
-    var filename = prompt("filename: ", "data");
-    if (filename == null) {
-        filename = "data";
-    }
+    var filename = "hollow-object";
 
     var fileBlob = new Blob([jsonObj], {
         type: "application/json"
@@ -61,7 +57,12 @@ window.loadFile = function loadFile(elmt) {
             var normals = fileData.normals;
             var matrices = fileData.matrices;
 
-            // TODO : create a new Hollow object from file
+            document.getElementById('hollow').selectedIndex = index;
+
+            window.currentObject = new Hollow(index, vertices, normals);
+            window.currentObject.loadMatrices(matrices);
+
+            // TODO : render object here
         }
     }
 }
