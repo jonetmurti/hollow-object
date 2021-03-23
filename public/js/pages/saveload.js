@@ -37,10 +37,7 @@ window.load = function load() {
     inputFile.click();
 }
 
-/**
- * Load file from an input
- * @param {input} elmt 
- */
+/* Deprecated
 window.loadFile = function loadFile(elmt) {
     var files = elmt.files[0];
 
@@ -65,4 +62,4 @@ window.loadFile = function loadFile(elmt) {
             // TODO : render object here
         }
     }
-}
+}*/
