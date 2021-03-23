@@ -347,7 +347,7 @@ window.run = function run() {
     // ===================================================
     render();
 
-function render() {
+    function render() {
         if (window.currentObject) {
             gl.enable(gl.CULL_FACE);
 
