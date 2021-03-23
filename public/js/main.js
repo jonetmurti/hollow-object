@@ -349,11 +349,12 @@ window.run = function run() {
 
 function render() {
         if (window.currentObject) {
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
             gl.enable(gl.CULL_FACE);
 
-            // gl.enable(gl.DEPTH_TEST);
+            gl.enable(gl.DEPTH_TEST);
+            gl.depthFunc(gl.LESS);
+
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
             gl.bindBuffer(gl.ARRAY_BUFFER, positionBuf);
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(window.currentObject.vertices), gl.STATIC_DRAW);
