@@ -45,7 +45,8 @@ window.run = function run() {
 
         vec3 defaultColor = vec3(1.0, 0.0, 0.0);
 
-        gl_FragColor = vec4(totalIntensity * defaultColor, 1.0);
+        // gl_FragColor = vec4(totalIntensity * defaultColor, 1.0);
+        gl_FragColor = vec4(defaultColor, 1.0);
     }`;
 
     var canvas = document.getElementById('gl-canvas');
