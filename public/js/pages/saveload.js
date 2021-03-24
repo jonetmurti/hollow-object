@@ -7,6 +7,7 @@ window.save = function save() {
         index: object.index,
         vertices: object.vertices,
         normals: object.normals,
+        color: object.color,
         matrices: {
             scale: object.scale,
             rotationY: object.rotationY,

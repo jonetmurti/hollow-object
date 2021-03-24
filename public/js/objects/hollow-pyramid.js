@@ -227,3 +227,5 @@ export let limasNormals = [
     ...bulkRotate(faceNormals, 180),
     ...bulkRotate(faceNormals, 270)
 ];
+
+export let limasColor = [1, 0, 0];

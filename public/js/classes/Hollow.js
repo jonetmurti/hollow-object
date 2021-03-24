@@ -4,10 +4,11 @@ import {
 } from '../libs/matrix.js';
 
 export default class Hollow {
-    constructor(index, vertices, normals) {
+    constructor(index, vertices, normals, color) {
         this.index = index;
         this.vertices = vertices;
         this.normals = normals;
+        this.color = color;
         this.nVertices = this.vertices.length/3;
 
         this.scale = [

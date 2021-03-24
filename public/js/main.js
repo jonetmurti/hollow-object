@@ -1,9 +1,9 @@
 import Camera from './classes/Camera.js';
 import Hollow from './classes/Hollow.js';
-import { hollowCubic, normalHollowCubic } from './objects/hollow-cube.js';
-import { hollowLimas, limasNormals } from './objects/hollow-pyramid.js';
-import { hollowPrism, prismNormal } from './objects/hollow-prism.js';
-import { cube, cubeNormals } from './objects/cube.js';
+import { hollowCubic, normalHollowCubic, hollowCubicColor } from './objects/hollow-cube.js';
+import { hollowLimas, limasNormals, limasColor } from './objects/hollow-pyramid.js';
+import { hollowPrism, prismNormal, prismColor } from './objects/hollow-prism.js';
+import { cube, cubeNormals, cubeColor } from './objects/cube.js';
 
 // Shading shaders
 var shadingVertText = `precision mediump float;
@@ -26,6 +26,7 @@ var shadingFragText = `precision mediump float;
 varying vec3 vNormal;
 varying vec3 fragPos;
 uniform vec3 viewPos;
+uniform vec3 color;
 
 void main() {
     vec3 normalizedNormal = normalize(vec3(vNormal.xy, -1.0*vNormal.z));
@@ -44,9 +45,7 @@ void main() {
 
     vec3 totalIntensity = ambient + diffuse + specular;
 
-    vec3 defaultColor = vec3(1.0, 0.0, 0.0);
-
-    gl_FragColor = vec4(totalIntensity * defaultColor, 1.0);
+    gl_FragColor = vec4(totalIntensity * color, 1.0);
 }`;
 
 // Normal Shaders
@@ -62,12 +61,13 @@ void main() {
 }`;
 var fragText = `precision mediump float;
 
+uniform vec3 color;
+
 void main() {
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragColor = vec4(color, 1.0);
 }`;
 
 window.run = function run() {
-
     var canvas = document.getElementById('gl-canvas');
 
     canvas.width = 600;
@@ -163,7 +163,7 @@ window.run = function run() {
          }
          fileReader.onload = function(){
             var data = JSON.parse(fileReader.result);
-            window.currentObject = new Hollow(data.index, data.vertices, data.normal);
+            window.currentObject = new Hollow(data.index, data.vertices, data.normal, data.color);
             window.currentObject.loadMatrices(data.matrices);
             document.getElementById('hollow').selectedIndex = data.index;
             // TODO : Load Color
@@ -177,14 +177,14 @@ window.run = function run() {
     var selectObject = document.getElementById('hollow');
     selectObject.addEventListener('change', function() {
         if (selectObject.value=="limas") {
-            window.currentObject = new Hollow(1, hollowLimas, limasNormals);
+            window.currentObject = new Hollow(1, hollowLimas, limasNormals, limasColor);
         } else if (selectObject.value=="kubus") {
-            window.currentObject = new Hollow(2, hollowCubic, normalHollowCubic);
+            window.currentObject = new Hollow(2, hollowCubic, normalHollowCubic, hollowCubicColor);
         } else if (selectObject.value=="prisma") {
-            window.currentObject = new Hollow(3, hollowPrism, prismNormal);
+            window.currentObject = new Hollow(3, hollowPrism, prismNormal, prismColor);
             window.currentObject.updateTranslationY(0)
         } else {
-            window.currentObject = new Hollow(0, cube, cubeNormals);
+            window.currentObject = new Hollow(0, cube, cubeNormals, cubeColor);
         }
         render();
     });
@@ -206,6 +206,7 @@ window.run = function run() {
     var objMatLoc = gl.getUniformLocation(program, 'objMat');
     var modViewLoc = gl.getUniformLocation(program, 'modelViewMat');
     var projLoc = gl.getUniformLocation(program, 'projMat');
+    var colorLoc = gl.getUniformLocation(program, 'color');
     var viewPosLoc = null;
 
     let shadingOnRadio = document.getElementById('shading-on');
@@ -217,6 +218,7 @@ window.run = function run() {
             objMatLoc = gl.getUniformLocation(shadingProgram, 'objMat');
             modViewLoc = gl.getUniformLocation(shadingProgram, 'modelViewMat');
             projLoc = gl.getUniformLocation(shadingProgram, 'projMat');
+            colorLoc = gl.getUniformLocation(shadingProgram, 'color');
             viewPosLoc = gl.getUniformLocation(shadingProgram, 'viewPos');
             shadingOn = true;
             render();
@@ -380,6 +382,7 @@ window.run = function run() {
             gl.uniformMatrix4fv(objMatLoc, false, new Float32Array(objMat));
             gl.uniformMatrix4fv(modViewLoc, false, new Float32Array(modelView));
             gl.uniformMatrix4fv(projLoc, false, new Float32Array(projectionMatrix));
+            gl.uniform3fv(colorLoc, new Float32Array(window.currentObject.color));
 
             if (shadingOn)
                 gl.uniform3fv(viewPosLoc, new Float32Array(camera.calculateEye()));
